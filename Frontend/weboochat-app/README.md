@@ -1,73 +1,46 @@
-# Welcome to your Lovable project
+# Getting Started with Create React App
 
-## Project info
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-**URL**: https://lovable.dev/projects/30a4ac88-1bc0-4c53-a31e-541ec19bf1cb
+## Available Scripts
 
-## How can I edit this code?
+In the project directory, you can run:
 
-There are several ways of editing your application.
+### `npm start`
 
-**Use Lovable**
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/30a4ac88-1bc0-4c53-a31e-541ec19bf1cb) and start prompting.
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-Changes made via Lovable will be committed automatically to this repo.
+### `npm test`
 
-**Use your preferred IDE**
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### `npm run build`
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-Follow these steps:
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### `npm run eject`
 
-# Step 3: Install the necessary dependencies.
-npm i
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-**Edit a file directly in GitHub**
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-**Use GitHub Codespaces**
+## Learn More
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/30a4ac88-1bc0-4c53-a31e-541ec19bf1cb) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+To learn React, check out the [React documentation](https://reactjs.org/).

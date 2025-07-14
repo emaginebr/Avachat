@@ -1,68 +1,68 @@
 # WebooChat
 
-**WebooChat** é uma plataforma de atendimento online integrada com **ChatGPT** e **WhatsApp**, desenvolvida para oferecer uma experiência conversacional inteligente, automatizada e personalizada para empresas e clientes.
+**WebooChat** is an online support platform integrated with **ChatGPT** and **WhatsApp**, designed to provide an intelligent, automated, and personalized conversational experience for businesses and customers.
 
 ---
 
-## 🚀 Visão Geral
+## 🚀 Overview
 
-WebooChat permite que empresas se conectem com seus clientes via WhatsApp e Web Chat, utilizando a inteligência do ChatGPT para responder automaticamente, registrar interações e transferir para atendentes humanos quando necessário.
+WebooChat enables businesses to connect with customers via WhatsApp and Web Chat using the power of ChatGPT to automatically respond, log interactions, and escalate to human agents when needed.
 
 ---
 
-## ⚙️ Tecnologias Utilizadas
+## ⚙️ Technologies Used
 
 - **Frontend:** [React](https://reactjs.org/)
 - **Backend:** [.NET Core 8](https://dotnet.microsoft.com/)
-- **Banco de Dados:** [PostgreSQL](https://www.postgresql.org/)
-- **Integrações:**
+- **Database:** [PostgreSQL](https://www.postgresql.org/)
+- **Integrations:**
   - [OpenAI GPT-4](https://platform.openai.com/)
   - [WhatsApp Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api)
 
 ---
 
-## 🧩 Funcionalidades
+## 🧩 Features
 
-- Atendimento automatizado via ChatGPT
-- Integração direta com WhatsApp Business API
-- Interface web moderna e responsiva
-- Suporte a múltiplos atendentes e setores
-- Histórico de conversas
-- Encaminhamento inteligente (bot → humano)
-- Painel administrativo para controle de atendimentos
+- Automated support via ChatGPT
+- Direct integration with WhatsApp Business API
+- Modern, responsive web interface
+- Multi-agent and multi-department support
+- Conversation history
+- Smart routing (bot → human)
+- Admin panel for managing support sessions
 
 ---
 
-## 📦 Estrutura do Projeto
+## 📦 Project Structure
 
 ```plaintext
 /WebooChat
 │
-├── backend/            # API em .NET Core
+├── backend/            # .NET Core API
 │   └── Controllers/
 │   └── Services/
 │   └── Models/
 │
-├── frontend/           # Interface em React
+├── frontend/           # React Interface
 │   └── src/
 │       └── components/
 │       └── pages/
 │       └── services/
 │
-├── database/           # Scripts e migrations PostgreSQL
+├── database/           # PostgreSQL scripts and migrations
 │
 └── README.md
 ```
 
 ---
 
-## 🛠️ Como Rodar Localmente
+## 🛠️ Running Locally
 
-### Pré-requisitos
+### Prerequisites
 - Node.js 18+
 - .NET 8 SDK
 - PostgreSQL 14+
-- Docker (opcional, para ambiente integrado)
+- Docker (optional, for integrated environment)
 
 ### Backend (.NET Core)
 ```bash
@@ -81,9 +81,9 @@ npm run dev
 
 ---
 
-## 🔐 Variáveis de Ambiente
+## 🔐 Environment Variables
 
-Crie um arquivo `.env` com as seguintes variáveis:
+Create a `.env` file with the following variables:
 
 ```env
 # OpenAI
@@ -93,7 +93,7 @@ OPENAI_API_KEY=your_openai_key
 WHATSAPP_TOKEN=your_whatsapp_token
 WHATSAPP_PHONE_NUMBER_ID=your_number_id
 
-# Banco de dados
+# Database
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 POSTGRES_DB=weboochat
@@ -103,18 +103,18 @@ POSTGRES_PASSWORD=securepassword
 
 ---
 
-## 📄 Licença
+## 📄 License
 
-Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ---
 
-## 🌐 Acesse
+## 🌐 Live
 
 🔗 [https://weboochat.com](https://weboochat.com)
 
 ---
 
-## 🙌 Contribuição
+## 🙌 Contribution
 
-Pull requests são bem-vindos! Sinta-se livre para sugerir melhorias ou reportar bugs.
+Pull requests are welcome! Feel free to suggest improvements or report bugs.
