@@ -1,0 +1,26 @@
+meta {
+  name: Create Agent
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/agents
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Novo Agente",
+    "description": "Descricao do agente",
+    "systemPrompt": "Voce e um assistente virtual",
+    "collectName": false,
+    "collectEmail": false,
+    "collectPhone": false
+  }
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Upload File
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/agents/:agentId/files
+  body: multipartForm
+  auth: none
+}
+
+params:path {
+  agentId: 1
+}
+
+body:multipart-form {
+  file: @file(./sample.md)
+}

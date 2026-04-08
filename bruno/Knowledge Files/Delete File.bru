@@ -1,0 +1,16 @@
+meta {
+  name: Delete File
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/api/agents/:agentId/files/:fileId
+  body: none
+  auth: none
+}
+
+params:path {
+  agentId: 1
+  fileId: 1
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Get Messages By Session
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/sessions/:sessionId/messages?pagina=1&tamanhoPagina=50
+  body: none
+  auth: none
+}
+
+params:query {
+  pagina: 1
+  tamanhoPagina: 50
+}
+
+params:path {
+  sessionId: 1
+}

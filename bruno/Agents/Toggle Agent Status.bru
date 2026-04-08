@@ -1,0 +1,15 @@
+meta {
+  name: Toggle Agent Status
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/api/agents/:id/status
+  body: none
+  auth: none
+}
+
+params:path {
+  id: 1
+}

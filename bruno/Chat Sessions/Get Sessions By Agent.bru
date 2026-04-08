@@ -1,0 +1,20 @@
+meta {
+  name: Get Sessions By Agent
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/agents/:agentId/sessions?pagina=1&tamanhoPagina=20
+  body: none
+  auth: none
+}
+
+params:query {
+  pagina: 1
+  tamanhoPagina: 20
+}
+
+params:path {
+  agentId: 1
+}

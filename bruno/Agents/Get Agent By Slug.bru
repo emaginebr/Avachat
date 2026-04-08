@@ -1,0 +1,15 @@
+meta {
+  name: Get Agent By Slug
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/agents/:slug
+  body: none
+  auth: none
+}
+
+params:path {
+  slug: bia
+}

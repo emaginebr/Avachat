@@ -1,0 +1,15 @@
+meta {
+  name: Get Files By Agent
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/agents/:agentId/files
+  body: none
+  auth: none
+}
+
+params:path {
+  agentId: 1
+}

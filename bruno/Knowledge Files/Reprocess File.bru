@@ -1,0 +1,16 @@
+meta {
+  name: Reprocess File
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/agents/:agentId/files/:fileId/reprocess
+  body: none
+  auth: none
+}
+
+params:path {
+  agentId: 1
+  fileId: 1
+}

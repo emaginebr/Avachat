@@ -3,6 +3,7 @@ using Avachat.Domain.Models;
 using Avachat.Infra.Interfaces.AppServices;
 using Avachat.Infra.Interfaces.Repository;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Avachat.Application.Services;
 
@@ -12,6 +13,7 @@ public class ChatService
     private readonly IOpenAIService _openAIService;
     private readonly IChatSessionRepository<ChatSession> _sessionRepository;
     private readonly IChatMessageRepository<ChatMessage> _messageRepository;
+    private readonly ILogger<ChatService> _logger;
     private readonly int _maxHistoryMessages;
 
     public ChatService(
@@ -19,12 +21,14 @@ public class ChatService
         IOpenAIService openAIService,
         IChatSessionRepository<ChatSession> sessionRepository,
         IChatMessageRepository<ChatMessage> messageRepository,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ILogger<ChatService> logger)
     {
         _searchService = searchService;
         _openAIService = openAIService;
         _sessionRepository = sessionRepository;
         _messageRepository = messageRepository;
+        _logger = logger;
         _maxHistoryMessages = int.TryParse(configuration["Chat:MaxHistoryMessages"], out var maxHistory) ? maxHistory : 20;
     }
 
@@ -95,6 +99,16 @@ public class ChatService
 
         // Build system prompt with grounding instruction
         var fullSystemPrompt = systemPrompt + "\n\nIMPORTANTE: Responda SOMENTE com base no contexto fornecido. Se nao encontrar informacao relevante no contexto, informe que nao possui essa informacao.";
+
+        // Log full prompt
+        _logger.LogInformation("========== OPENAI PROMPT ==========");
+        _logger.LogInformation("[SYSTEM PROMPT]\n{SystemPrompt}", fullSystemPrompt);
+        _logger.LogInformation("[CHUNKS FOUND] {ChunkCount}", chunks.Count);
+        for (int i = 0; i < messages.Count; i++)
+        {
+            _logger.LogInformation("[MESSAGE {Index}] Role={Role}\n{Content}", i, messages[i].Role, messages[i].Content);
+        }
+        _logger.LogInformation("========== END PROMPT ==========");
 
         // Stream response
         var fullResponse = string.Empty;

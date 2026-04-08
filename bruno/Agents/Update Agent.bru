@@ -1,0 +1,30 @@
+meta {
+  name: Update Agent
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/agents/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: 1
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Agente Atualizado",
+    "description": "Descricao atualizada",
+    "systemPrompt": "Voce e um assistente virtual atualizado",
+    "collectName": true,
+    "collectEmail": true,
+    "collectPhone": false
+  }
+}

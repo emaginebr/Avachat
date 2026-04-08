@@ -1,5 +1,6 @@
 using Avachat.Application;
 using Avachat.API.WebSocket;
+using Avachat.Infra.Interfaces.AppServices;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -28,6 +29,10 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Elasticsearch - create index on startup
+var esService = app.Services.GetRequiredService<IElasticsearchService>();
+await esService.CreateIndexAsync();
 
 // Swagger
 if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName == "Docker")

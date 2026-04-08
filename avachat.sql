@@ -4,7 +4,7 @@
 -- =============================================
 
 -- agents
-CREATE TABLE agents (
+CREATE TABLE avachat_agents (
     agent_id        BIGINT GENERATED ALWAYS AS IDENTITY,
     name            VARCHAR(260)                NOT NULL,
     slug            VARCHAR(260)                NOT NULL,
@@ -17,12 +17,12 @@ CREATE TABLE agents (
     created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 
-    CONSTRAINT agents_pkey     PRIMARY KEY (agent_id),
-    CONSTRAINT agents_slug_key UNIQUE (slug)
+    CONSTRAINT avachat_agents_pkey     PRIMARY KEY (agent_id),
+    CONSTRAINT avachat_agents_slug_key UNIQUE (slug)
 );
 
 -- knowledge_files
-CREATE TABLE knowledge_files (
+CREATE TABLE avachat_knowledge_files (
     knowledge_file_id   BIGINT GENERATED ALWAYS AS IDENTITY,
     agent_id            BIGINT,
     file_name           VARCHAR(500)                NOT NULL,
@@ -33,12 +33,12 @@ CREATE TABLE knowledge_files (
     created_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at          TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 
-    CONSTRAINT knowledge_files_pkey PRIMARY KEY (knowledge_file_id),
-    CONSTRAINT fk_agents_knowledge_files FOREIGN KEY (agent_id) REFERENCES agents (agent_id)
+    CONSTRAINT avachat_knowledge_files_pkey PRIMARY KEY (knowledge_file_id),
+    CONSTRAINT avachat_fk_agents_knowledge_files FOREIGN KEY (agent_id) REFERENCES avachat_agents (agent_id)
 );
 
 -- chat_sessions
-CREATE TABLE chat_sessions (
+CREATE TABLE avachat_chat_sessions (
     chat_session_id BIGINT GENERATED ALWAYS AS IDENTITY,
     agent_id        BIGINT,
     user_name       VARCHAR(260),
@@ -47,23 +47,23 @@ CREATE TABLE chat_sessions (
     started_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     ended_at        TIMESTAMP WITHOUT TIME ZONE,
 
-    CONSTRAINT chat_sessions_pkey PRIMARY KEY (chat_session_id),
-    CONSTRAINT fk_agents_chat_sessions FOREIGN KEY (agent_id) REFERENCES agents (agent_id)
+    CONSTRAINT avachat_chat_sessions_pkey PRIMARY KEY (chat_session_id),
+    CONSTRAINT avachat_fk_agents_chat_sessions FOREIGN KEY (agent_id) REFERENCES avachat_agents (agent_id)
 );
 
 -- chat_messages
-CREATE TABLE chat_messages (
+CREATE TABLE avachat_chat_messages (
     chat_message_id BIGINT GENERATED ALWAYS AS IDENTITY,
     chat_session_id BIGINT,
     sender_type     INTEGER                     NOT NULL,
     content         TEXT                        NOT NULL,
     created_at      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 
-    CONSTRAINT chat_messages_pkey PRIMARY KEY (chat_message_id),
-    CONSTRAINT fk_chat_sessions_chat_messages FOREIGN KEY (chat_session_id) REFERENCES chat_sessions (chat_session_id)
+    CONSTRAINT avachat_chat_messages_pkey PRIMARY KEY (chat_message_id),
+    CONSTRAINT avachat_fk_chat_sessions_chat_messages FOREIGN KEY (chat_session_id) REFERENCES avachat_chat_sessions (chat_session_id)
 );
 
 -- Indexes
-CREATE INDEX idx_knowledge_files_agent_id   ON knowledge_files (agent_id);
-CREATE INDEX idx_chat_sessions_agent_id     ON chat_sessions (agent_id);
-CREATE INDEX idx_chat_messages_session_id   ON chat_messages (chat_session_id);
+CREATE INDEX avachat_idx_knowledge_files_agent_id   ON avachat_knowledge_files (agent_id);
+CREATE INDEX avachat_idx_chat_sessions_agent_id     ON avachat_chat_sessions (agent_id);
+CREATE INDEX avachat_idx_chat_messages_session_id   ON avachat_chat_messages (chat_session_id);
