@@ -3,6 +3,7 @@ using Elastic.Clients.Elasticsearch.IndexManagement;
 using Elastic.Clients.Elasticsearch.Mapping;
 using Elastic.Clients.Elasticsearch.QueryDsl;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Avachat.Infra.Interfaces.AppServices;
 
 namespace Avachat.Infra.AppServices;
@@ -11,12 +12,14 @@ public class ElasticsearchService : IElasticsearchService
 {
     private readonly ElasticsearchClient _client;
     private readonly string _indexName;
+    private readonly ILogger<ElasticsearchService> _logger;
     private bool _indexCreated;
 
-    public ElasticsearchService(IConfiguration configuration)
+    public ElasticsearchService(IConfiguration configuration, ILogger<ElasticsearchService> logger)
     {
         var url = configuration["Elasticsearch:Url"] ?? "http://localhost:9200";
         _indexName = configuration["Elasticsearch:IndexName"] ?? "knowledge_chunks";
+        _logger = logger;
         var settings = new ElasticsearchClientSettings(new Uri(url));
         _client = new ElasticsearchClient(settings);
     }
@@ -86,12 +89,17 @@ public class ElasticsearchService : IElasticsearchService
     {
         await EnsureIndexAsync();
 
+        _logger.LogInformation(
+            "[Elasticsearch] Indexando {Count} chunk(s) - AgentId={AgentId}, FileId={FileId}, Index={Index}",
+            chunks.Count, agentId, knowledgeFileId, _indexName);
+
         for (int i = 0; i < chunks.Count; i++)
         {
             var chunk = chunks[i];
+            var docId = $"{knowledgeFileId}_{chunk.ChunkIndex}";
             var doc = new Dictionary<string, object>
             {
-                ["chunk_id"] = $"{knowledgeFileId}_{chunk.ChunkIndex}",
+                ["chunk_id"] = docId,
                 ["agent_id"] = agentId.ToString(),
                 ["knowledge_file_id"] = knowledgeFileId.ToString(),
                 ["content"] = chunk.Content,
@@ -99,20 +107,27 @@ public class ElasticsearchService : IElasticsearchService
                 ["chunk_index"] = chunk.ChunkIndex
             };
 
-            await _client.IndexAsync(doc, idx => idx
+            var response = await _client.IndexAsync(doc, idx => idx
                 .Index(_indexName)
-                .Id($"{knowledgeFileId}_{chunk.ChunkIndex}")
+                .Id(docId)
             );
+
+            _logger.LogInformation(
+                "[Elasticsearch] Chunk [{Index}/{Total}] indexado - DocId={DocId}, Sucesso={Success}",
+                i + 1, chunks.Count, docId, response.IsValidResponse);
         }
 
         await _client.Indices.RefreshAsync(_indexName);
+        _logger.LogInformation("[Elasticsearch] Index refreshed apos indexacao de {Count} chunk(s)", chunks.Count);
     }
 
     public async Task DeleteChunksByFileIdAsync(long knowledgeFileId)
     {
         await EnsureIndexAsync();
 
-        await _client.DeleteByQueryAsync<Dictionary<string, object>>(_indexName, d => d
+        _logger.LogInformation("[Elasticsearch] Removendo chunks do FileId={FileId}", knowledgeFileId);
+
+        var response = await _client.DeleteByQueryAsync<Dictionary<string, object>>(_indexName, d => d
             .Query(q => q
                 .Term(new TermQuery("knowledge_file_id")
                 {
@@ -120,13 +135,19 @@ public class ElasticsearchService : IElasticsearchService
                 })
             )
         );
+
+        _logger.LogInformation(
+            "[Elasticsearch] Chunks removidos do FileId={FileId} - Deletados={Deleted}",
+            knowledgeFileId, response.Deleted);
     }
 
     public async Task DeleteChunksByAgentIdAsync(long agentId)
     {
         await EnsureIndexAsync();
 
-        await _client.DeleteByQueryAsync<Dictionary<string, object>>(_indexName, d => d
+        _logger.LogInformation("[Elasticsearch] Removendo todos os chunks do AgentId={AgentId}", agentId);
+
+        var response = await _client.DeleteByQueryAsync<Dictionary<string, object>>(_indexName, d => d
             .Query(q => q
                 .Term(new TermQuery("agent_id")
                 {
@@ -134,11 +155,19 @@ public class ElasticsearchService : IElasticsearchService
                 })
             )
         );
+
+        _logger.LogInformation(
+            "[Elasticsearch] Chunks removidos do AgentId={AgentId} - Deletados={Deleted}",
+            agentId, response.Deleted);
     }
 
     public async Task<List<string>> HybridSearchAsync(long agentId, float[] queryVector, string queryText, int topK = 5)
     {
         await EnsureIndexAsync();
+
+        _logger.LogInformation(
+            "[Elasticsearch] Busca hibrida - AgentId={AgentId}, Query=\"{Query}\", TopK={TopK}",
+            agentId, queryText.Length > 100 ? queryText[..100] + "..." : queryText, topK);
 
         var response = await _client.SearchAsync<Dictionary<string, object>>(s => s
             .Index(_indexName)
@@ -177,6 +206,16 @@ public class ElasticsearchService : IElasticsearchService
                     results.Add(content?.ToString() ?? string.Empty);
                 }
             }
+        }
+
+        _logger.LogInformation(
+            "[Elasticsearch] Busca concluida - AgentId={AgentId}, Resultados={Count}, Valida={Valid}",
+            agentId, results.Count, response.IsValidResponse);
+
+        for (int i = 0; i < results.Count; i++)
+        {
+            var preview = results[i].Length > 150 ? results[i][..150] + "..." : results[i];
+            _logger.LogInformation("[Elasticsearch] Resultado [{Index}]: {Preview}", i + 1, preview);
         }
 
         return results;
