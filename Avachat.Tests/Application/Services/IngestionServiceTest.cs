@@ -361,13 +361,99 @@ public class IngestionServiceTest
     [Fact]
     public void ChunkText_ShouldRespectChunkSize()
     {
-        var text = string.Join("\n\n", Enumerable.Range(1, 100).Select(i => $"Paragraph {i} with content."));
+        var text = string.Join("\n", Enumerable.Range(1, 100).Select(i => $"Paragraph {i} with content."));
 
         var result = IngestionService.ChunkText(text, 100, 20);
 
+        Assert.True(result.Count > 1);
+    }
+
+    [Fact]
+    public void ChunkText_ShouldNotBreakLines_InTheMiddle()
+    {
+        var text = "Linha 1 completa\nLinha 2 completa\nLinha 3 completa\nLinha 4 completa";
+
+        var result = IngestionService.ChunkText(text, 40, 0);
+
         foreach (var chunk in result)
         {
-            Assert.True(chunk.Length <= 200, $"Chunk too large: {chunk.Length} chars");
+            Assert.DoesNotContain("complet\n", chunk);
+            var lines = chunk.Split('\n');
+            foreach (var line in lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    Assert.True(
+                        line.StartsWith("Linha") || line.EndsWith("completa"),
+                        $"Linha quebrada no meio: \"{line}\"");
+                }
+            }
+        }
+    }
+
+    [Fact]
+    public void ChunkText_ShouldSplitOnSingleNewlines()
+    {
+        var text = "Linha 1\nLinha 2\nLinha 3\nLinha 4\nLinha 5\nLinha 6\nLinha 7\nLinha 8\nLinha 9\nLinha 10";
+
+        var result = IngestionService.ChunkText(text, 30, 0);
+
+        Assert.True(result.Count > 1);
+        foreach (var chunk in result)
+        {
+            var lines = chunk.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
+            {
+                Assert.StartsWith("Linha", line);
+            }
+        }
+    }
+
+    [Fact]
+    public void ChunkText_ShouldPreserveAllContent()
+    {
+        var lines = Enumerable.Range(1, 20).Select(i => $"Linha {i} do documento").ToList();
+        var text = string.Join("\n", lines);
+
+        var result = IngestionService.ChunkText(text, 80, 0);
+        var allContent = string.Join("\n", result);
+
+        foreach (var line in lines)
+        {
+            Assert.Contains(line, allContent);
+        }
+    }
+
+    [Fact]
+    public void ChunkText_ShouldHandleOverlap_WithCompleteLines()
+    {
+        var text = "Linha 1\nLinha 2\nLinha 3\nLinha 4\nLinha 5\nLinha 6";
+
+        var result = IngestionService.ChunkText(text, 30, 15);
+
+        Assert.True(result.Count > 1);
+        foreach (var chunk in result)
+        {
+            var lines = chunk.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
+            {
+                Assert.StartsWith("Linha", line);
+            }
+        }
+    }
+
+    [Fact]
+    public void ChunkText_ShouldHandleMarkdownDocument()
+    {
+        var text = "# Titulo\n\nParagrafo de introducao.\n\n## Secao 1\n\nConteudo da secao 1.\nContinuacao da secao 1.\n\n## Secao 2\n\nConteudo da secao 2.";
+
+        var result = IngestionService.ChunkText(text, 60, 0);
+
+        Assert.True(result.Count > 1);
+        foreach (var chunk in result)
+        {
+            Assert.DoesNotContain("Titul\n", chunk);
+            Assert.DoesNotContain("seca\n", chunk);
         }
     }
 }

@@ -114,23 +114,39 @@ public class IngestionService
         var chunks = new List<string>();
         if (string.IsNullOrWhiteSpace(text)) return chunks;
 
-        // Split on double newlines first for natural boundaries
-        var paragraphs = text.Split(new[] { "\n\n", "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+        // Priority 1: split by paragraphs (double newline)
+        var paragraphs = text.Split(new[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.None);
 
         var currentChunk = string.Empty;
 
         foreach (var paragraph in paragraphs)
         {
-            if (currentChunk.Length + paragraph.Length + 2 > chunkSize && currentChunk.Length > 0)
+            // If a single paragraph exceeds chunkSize, split it by lines
+            if (paragraph.Length > chunkSize)
+            {
+                // Flush current chunk first
+                if (currentChunk.Length > 0)
+                {
+                    chunks.Add(currentChunk.Trim());
+                    currentChunk = BuildOverlap(currentChunk, overlap, "\n\n");
+                }
+
+                // Split large paragraph by individual lines
+                SplitByLines(paragraph, chunkSize, overlap, chunks, ref currentChunk);
+                continue;
+            }
+
+            var separator = currentChunk.Length > 0 ? "\n\n" : "";
+            var candidate = currentChunk + separator + paragraph;
+
+            if (candidate.Length > chunkSize && currentChunk.Length > 0)
             {
                 chunks.Add(currentChunk.Trim());
-                // Keep overlap from end of previous chunk
-                var overlapStart = Math.Max(0, currentChunk.Length - overlap);
-                currentChunk = currentChunk[overlapStart..] + "\n\n" + paragraph;
+                currentChunk = BuildOverlap(currentChunk, overlap, "\n\n") + "\n\n" + paragraph;
             }
             else
             {
-                currentChunk += (currentChunk.Length > 0 ? "\n\n" : "") + paragraph;
+                currentChunk = candidate;
             }
         }
 
@@ -140,5 +156,48 @@ public class IngestionService
         }
 
         return chunks;
+    }
+
+    private static void SplitByLines(string text, int chunkSize, int overlap, List<string> chunks, ref string currentChunk)
+    {
+        var lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+        foreach (var line in lines)
+        {
+            var separator = currentChunk.Length > 0 ? "\n" : "";
+            var candidate = currentChunk + separator + line;
+
+            if (candidate.Length > chunkSize && currentChunk.Length > 0)
+            {
+                chunks.Add(currentChunk.Trim());
+                currentChunk = BuildOverlap(currentChunk, overlap, "\n") + "\n" + line;
+            }
+            else
+            {
+                currentChunk = candidate;
+            }
+        }
+    }
+
+    private static string BuildOverlap(string text, int maxOverlap, string separator)
+    {
+        if (maxOverlap <= 0 || string.IsNullOrEmpty(text)) return string.Empty;
+
+        var parts = text.Split(new[] { separator }, StringSplitOptions.None);
+        var result = string.Empty;
+
+        for (int i = parts.Length - 1; i >= 0; i--)
+        {
+            var candidate = i == parts.Length - 1
+                ? parts[i]
+                : parts[i] + separator + result;
+
+            if (candidate.Length > maxOverlap)
+                break;
+
+            result = candidate;
+        }
+
+        return result;
     }
 }
