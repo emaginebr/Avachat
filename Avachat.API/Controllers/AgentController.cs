@@ -174,7 +174,7 @@ public class AgentController : ControllerBase
             if (agent == null)
                 return NotFound(Result<object>.Failure("Agente nao encontrado"));
 
-            var result = await _chatService.TestMessageAsync(id, agent.SystemPrompt, info.Query);
+            var result = await _chatService.TestMessageAsync(id, agent.ChatModel, agent.SystemPrompt, info.Query);
             return Ok(Result<AgentTestResultInfo>.Success(result));
         }
         catch (Exception ex)

@@ -12,13 +12,11 @@ public class OpenAIService : IOpenAIService
 {
     private readonly OpenAIClient _client;
     private readonly string _embeddingModel;
-    private readonly string _chatModel;
 
     public OpenAIService(IConfiguration configuration)
     {
         var apiKey = configuration["OpenAI:ApiKey"] ?? throw new InvalidOperationException("OpenAI:ApiKey not configured");
         _embeddingModel = configuration["OpenAI:EmbeddingModel"] ?? "text-embedding-3-small";
-        _chatModel = configuration["OpenAI:ChatModel"] ?? "gpt-4o";
         _client = new OpenAIClient(apiKey);
     }
 
@@ -30,11 +28,12 @@ public class OpenAIService : IOpenAIService
     }
 
     public async Task<string> ChatCompletionAsync(
+        string model,
         string systemPrompt,
         List<ChatCompletionMessage> messages,
         CancellationToken cancellationToken = default)
     {
-        var chatClient = _client.GetChatClient(_chatModel);
+        var chatClient = _client.GetChatClient(model);
 
         var chatMessages = new List<OpenAI.Chat.ChatMessage>
         {
@@ -54,11 +53,12 @@ public class OpenAIService : IOpenAIService
     }
 
     public async IAsyncEnumerable<string> StreamChatCompletionAsync(
+        string model,
         string systemPrompt,
         List<ChatCompletionMessage> messages,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var chatClient = _client.GetChatClient(_chatModel);
+        var chatClient = _client.GetChatClient(model);
 
         var chatMessages = new List<OpenAI.Chat.ChatMessage>
         {

@@ -19,6 +19,9 @@ public class AgentInfo
     [JsonPropertyName("systemPrompt")]
     public string SystemPrompt { get; set; } = string.Empty;
 
+    [JsonPropertyName("chatModel")]
+    public string ChatModel { get; set; } = string.Empty;
+
     [JsonPropertyName("status")]
     public int Status { get; set; }
 
@@ -48,6 +51,9 @@ public class AgentInsertInfo
 
     [JsonPropertyName("systemPrompt")]
     public string SystemPrompt { get; set; } = string.Empty;
+
+    [JsonPropertyName("chatModel")]
+    public string ChatModel { get; set; } = "gpt-4o";
 
     [JsonPropertyName("collectName")]
     public bool CollectName { get; set; }

@@ -7,6 +7,7 @@ public class Agent
     public string Slug { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string SystemPrompt { get; set; } = string.Empty;
+    public string ChatModel { get; set; } = string.Empty;
     public int Status { get; set; } = 1;
     public bool CollectName { get; set; }
     public bool CollectEmail { get; set; }

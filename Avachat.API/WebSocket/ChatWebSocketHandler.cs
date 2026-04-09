@@ -95,7 +95,7 @@ public static class ChatWebSocketHandler
                         try
                         {
                             await foreach (var token in chatService.ProcessMessageAsync(
-                                agent.AgentId, sessionId.Value, agent.SystemPrompt, content))
+                                agent.AgentId, sessionId.Value, agent.ChatModel, agent.SystemPrompt, content))
                             {
                                 await SendJsonAsync(ws, new { type = "chunk", content = token });
                             }

@@ -56,13 +56,13 @@ public class ChatService
         return await _messageRepository.CreateAsync(message);
     }
 
-    public async Task<AgentTestResultInfo> TestMessageAsync(long agentId, string systemPrompt, string userMessage)
+    public async Task<AgentTestResultInfo> TestMessageAsync(long agentId, string chatModel, string systemPrompt, string userMessage)
     {
         var chunks = await _searchService.SearchAsync(agentId, userMessage);
         var fullSystemPrompt = BuildFullSystemPrompt(systemPrompt, null);
         var messages = BuildMessages(new List<ChatMessage>(), chunks, userMessage);
 
-        var response = await _openAIService.ChatCompletionAsync(fullSystemPrompt, messages);
+        var response = await _openAIService.ChatCompletionAsync(chatModel, fullSystemPrompt, messages);
 
         return new AgentTestResultInfo
         {
@@ -77,6 +77,7 @@ public class ChatService
     public async IAsyncEnumerable<string> ProcessMessageAsync(
         long agentId,
         long sessionId,
+        string chatModel,
         string systemPrompt,
         string userMessage,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -93,7 +94,7 @@ public class ChatService
         LogRequest(fullSystemPrompt, chunks, messages, userMessage);
 
         var fullResponse = string.Empty;
-        await foreach (var token in _openAIService.StreamChatCompletionAsync(fullSystemPrompt, messages, cancellationToken))
+        await foreach (var token in _openAIService.StreamChatCompletionAsync(chatModel, fullSystemPrompt, messages, cancellationToken))
         {
             fullResponse += token;
             yield return token;
