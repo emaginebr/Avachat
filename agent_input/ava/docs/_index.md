@@ -10,8 +10,8 @@
 
 | Produto | Descricao | Tipo | Documentacao |
 |---------|-----------|------|-------------|
-| Avachat | Plataforma de chatbots com IA (backend) | API | [Ver docs](emagine-avachat.md) |
-| Avachat App | Frontend para chatbots com IA | App | [Ver docs](emagine-avachat-app.md) |
+| AvaBot | Plataforma de chatbots com IA (backend) | API | [Ver docs](emagine-avabot.md) |
+| AvaBot App | Frontend para chatbots com IA | App | [Ver docs](emagine-avabot-app.md) |
 | NAuth | Framework de autenticacao multi-tenant | API | [Ver docs](emagine-nauth.md) |
 | NAuth React | Componentes React de autenticacao | Pacote NPM | [Ver docs](emagine-nauth-react.md) |
 | Brahma | Microservico de pedidos e e-commerce | API | [Ver docs](emagine-brahma.md) |
@@ -51,7 +51,7 @@
 - **zTools** — Utilitarios compartilhados (IA, email, S3, validacao)
 
 ### Aplicacoes Frontend
-- **Avachat App** — Interface de criacao e gestao de chatbots
+- **AvaBot App** — Interface de criacao e gestao de chatbots
 - **Dedalo App** — Editor visual de websites com drag-and-drop
 - **DevBlog** — Plataforma de blog para desenvolvedores
 - **Abipesca** — Aplicativo customizado da ABIPESCA

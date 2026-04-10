@@ -12,7 +12,7 @@
 
 ```bash
 git clone <repo-url>
-cd Avachat
+cd AvaBot
 git checkout 001-knowledge-agent-chatbot
 ```
 
@@ -25,7 +25,7 @@ Criar `appsettings.Development.json`:
 ```json
 {
   "ConnectionStrings": {
-    "AvachatContext": "Host=localhost;Database=avachat;Username=postgres;Password=postgres"
+    "AvaBotContext": "Host=localhost;Database=avabot;Username=postgres;Password=postgres"
   },
   "Elasticsearch": {
     "Url": "http://localhost:9200"

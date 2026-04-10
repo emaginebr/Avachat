@@ -1,4 +1,4 @@
-# Avachat - Knowledge Agent Chatbot Platform
+# AvaBot - Knowledge Agent Chatbot Platform
 
 ![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791)
@@ -59,25 +59,25 @@ Built with **ASP.NET Core 9**, **Entity Framework Core**, **Elasticsearch** for 
 
 ```
 Avachat/
-├── Avachat.API/                 # REST API + WebSocket handler
+├── AvaBot.API/                 # REST API + WebSocket handler
 │   ├── Controllers/             # AgentController, ChatSessionController, KnowledgeFileController
 │   ├── Validators/              # FluentValidation validators
 │   └── WebSocket/               # ChatWebSocketHandler
-├── Avachat.Application/         # Business logic layer
+├── AvaBot.Application/         # Business logic layer
 │   ├── Profiles/                # AutoMapper profiles
 │   └── Services/                # AgentService, ChatService, IngestionService, SearchService
-├── Avachat.Domain/              # Domain models and enums
+├── AvaBot.Domain/              # Domain models and enums
 │   ├── Models/                  # Agent, ChatSession, ChatMessage, KnowledgeFile
 │   └── Enums/                   # ProcessingStatus, SenderType
-├── Avachat.DTO/                 # Data Transfer Objects
-├── Avachat.Infra/               # Infrastructure implementation
+├── AvaBot.DTO/                 # Data Transfer Objects
+├── AvaBot.Infra/               # Infrastructure implementation
 │   ├── AppServices/             # ElasticsearchService, OpenAIService
-│   ├── Context/                 # AvachatContext (EF Core DbContext)
+│   ├── Context/                 # AvaBotContext (EF Core DbContext)
 │   └── Repository/              # Generic repository implementations
-├── Avachat.Infra.Interfaces/    # Generic repository and service interfaces
-├── Avachat.Console/             # CLI for creating/syncing agents from files
-├── Avachat.Tests/               # Unit tests (xUnit + Moq)
-├── Avachat.Tests.API/           # Integration tests (Flurl + FluentAssertions + WebSocket)
+├── AvaBot.Infra.Interfaces/    # Generic repository and service interfaces
+├── AvaBot.Console/             # CLI for creating/syncing agents from files
+├── AvaBot.Tests/               # Unit tests (xUnit + Moq)
+├── AvaBot.Tests.API/           # Integration tests (Flurl + FluentAssertions + WebSocket)
 ├── agent_input/                 # Agent configuration input directory
 │   ├── system_prompt.md         # Agent system prompt
 │   ├── description.md           # Agent description
@@ -86,7 +86,7 @@ Avachat/
 ├── docker-compose.yml           # Development environment
 ├── docker-compose-prod.yml      # Production environment
 ├── Dockerfile                   # Multi-stage .NET build
-├── avachat.sql                  # Database schema
+├── avabot.sql                  # Database schema
 └── .github/workflows/           # CI/CD pipelines
 ```
 
@@ -118,8 +118,8 @@ cp .env.example .env
 # Database
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=your_password_here
-POSTGRES_DB=avachat
-CONNECTION_STRING=Host=db;Database=avachat;Username=postgres;Password=your_password_here
+POSTGRES_DB=avabot
+CONNECTION_STRING=Host=db;Database=avabot;Username=postgres;Password=your_password_here
 
 # Elasticsearch
 ELASTICSEARCH_URL=http://elasticsearch:9200
@@ -192,18 +192,18 @@ docker compose ps
 #### 1. Create the database
 
 ```bash
-psql -U postgres -c "CREATE DATABASE avachat;"
-psql -U postgres -d avachat -f avachat.sql
+psql -U postgres -c "CREATE DATABASE avabot;"
+psql -U postgres -d avabot -f avabot.sql
 ```
 
 #### 2. Configure appsettings
 
-Edit `Avachat.API/appsettings.Development.json` with your local connection strings and OpenAI key.
+Edit `AvaBot.API/appsettings.Development.json` with your local connection strings and OpenAI key.
 
 #### 3. Run the API
 
 ```bash
-dotnet run --project Avachat.API
+dotnet run --project AvaBot.API
 ```
 
 The API will be available at `http://localhost:5030`.
@@ -215,7 +215,7 @@ The API will be available at `http://localhost:5030`.
 ### Unit Tests
 
 ```bash
-dotnet test Avachat.Tests
+dotnet test AvaBot.Tests
 ```
 
 ### Integration Tests (requires API running)
@@ -225,19 +225,19 @@ dotnet test Avachat.Tests
 docker compose up -d
 
 # Terminal 2: run integration tests
-dotnet test Avachat.Tests.API
+dotnet test AvaBot.Tests.API
 ```
 
 ### Test Structure
 
 ```
-Avachat.Tests/                    # 71 unit tests
+AvaBot.Tests/                    # 71 unit tests
 ├── Application/Services/         # AgentService, ChatService, IngestionService, SearchService
 └── API/
     ├── Controllers/              # AgentController, ChatSessionController, KnowledgeFileController
     └── Validators/               # AgentInsertInfoValidator
 
-Avachat.Tests.API/                # Integration tests (HTTP + WebSocket)
+AvaBot.Tests.API/                # Integration tests (HTTP + WebSocket)
 └── Controllers/                  # Agent, ChatSession, KnowledgeFile, ChatWebSocket
 ```
 
@@ -278,7 +278,7 @@ Avachat.Tests.API/                # Integration tests (HTTP + WebSocket)
 
 ### Bruno Collection
 
-Import the collection from `bruno/Avachat API/` in [Bruno](https://www.usebruno.com/) for interactive API testing.
+Import the collection from `bruno/AvaBot API/` in [Bruno](https://www.usebruno.com/) for interactive API testing.
 
 ---
 
@@ -296,7 +296,7 @@ agent_input/
     └── doc2.md
 
 # Run (from project root)
-dotnet run --project Avachat.Console -- "Agent Name"
+dotnet run --project AvaBot.Console -- "Agent Name"
 ```
 
 The CLI will:
@@ -314,7 +314,7 @@ The CLI will:
 cp .env.prod.example .env.prod
 
 # 2. Create external network
-docker network create avachat-external
+docker network create avabot-external
 
 # 3. Deploy
 docker compose --env-file .env.prod -f docker-compose-prod.yml up -d --build
@@ -332,31 +332,31 @@ Production deploy via SSH is configured in `.github/workflows/deploy-prod.yml` (
 
 ### Schema
 
-The database uses `avachat_` prefix on all tables:
+The database uses `avabot_` prefix on all tables:
 
 | Table | Description |
 |-------|-------------|
-| `avachat_agents` | Agent configurations |
-| `avachat_knowledge_files` | Uploaded knowledge documents |
-| `avachat_chat_sessions` | Chat sessions with user data |
-| `avachat_chat_messages` | Individual chat messages |
+| `avabot_agents` | Agent configurations |
+| `avabot_knowledge_files` | Uploaded knowledge documents |
+| `avabot_chat_sessions` | Chat sessions with user data |
+| `avabot_chat_messages` | Individual chat messages |
 
 ### Initialize
 
 ```bash
-psql -U postgres -d avachat -f avachat.sql
+psql -U postgres -d avabot -f avabot.sql
 ```
 
 ### Backup
 
 ```bash
-docker compose exec postgres pg_dump -U postgres avachat > backup.sql
+docker compose exec postgres pg_dump -U postgres avabot > backup.sql
 ```
 
 ### Restore
 
 ```bash
-docker compose exec -T postgres psql -U postgres avachat < backup.sql
+docker compose exec -T postgres psql -U postgres avabot < backup.sql
 ```
 
 ---

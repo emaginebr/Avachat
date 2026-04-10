@@ -49,9 +49,9 @@ Quando um usuario inicia uma nova sessao de chat, o sistema gera automaticamente
 
 ### User Story 3 - Conversar com o agente via Telegram (Priority: P2)
 
-Um usuario do Telegram pode conversar com um agente Avachat diretamente pelo aplicativo Telegram, sem precisar acessar o site. O bot recebe mensagens do usuario, processa via IA com o mesmo pipeline RAG existente, e responde no Telegram.
+Um usuario do Telegram pode conversar com um agente AvaBot diretamente pelo aplicativo Telegram, sem precisar acessar o site. O bot recebe mensagens do usuario, processa via IA com o mesmo pipeline RAG existente, e responde no Telegram.
 
-**Why this priority**: Expande o alcance do Avachat para uma nova plataforma com milhoes de usuarios, mas depende de infraestrutura adicional (webhook, processamento de mensagens).
+**Why this priority**: Expande o alcance do AvaBot para uma nova plataforma com milhoes de usuarios, mas depende de infraestrutura adicional (webhook, processamento de mensagens).
 
 **Independent Test**: Pode ser testado enviando uma mensagem ao bot no Telegram e verificando que ele responde com conteudo relevante baseado na base de conhecimento do agente.
 
@@ -118,7 +118,7 @@ O sistema deve expor um endpoint para receber atualizacoes (webhooks) do Telegra
 
 - **ChatSession (existente, modificada)**: Sessao de conversa entre usuario e agente. Ganha um novo atributo: chave de retomada (token unico, seguro, gerado na criacao)
 - **ChatMessage (existente, sem alteracao)**: Mensagem individual dentro de uma sessao, com tipo (usuario/assistente), conteudo e timestamp
-- **TelegramChat (novo)**: Representa a associacao entre um chat/usuario do Telegram e uma sessao do Avachat. Contem: identificador do chat Telegram, referencia a sessao, referencia ao agente
+- **TelegramChat (novo)**: Representa a associacao entre um chat/usuario do Telegram e uma sessao do AvaBot. Contem: identificador do chat Telegram, referencia a sessao, referencia ao agente
 
 ## Success Criteria *(mandatory)*
 

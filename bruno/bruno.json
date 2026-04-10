@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "Avachat API",
+  "name": "AvaBot API",
   "type": "collection",
   "ignore": [
     "node_modules",

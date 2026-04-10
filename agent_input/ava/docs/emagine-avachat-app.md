@@ -1,18 +1,18 @@
-# Avachat App
+# AvaBot App
 
 > Frontend moderno para criacao e gerenciamento de chatbots com inteligencia artificial.
 
-**Produto Emagine** | [Repositorio](https://github.com/emaginebr/avachat-app) | [Website](https://emagine.com.br/avachat)
+**Produto Emagine** | [Repositorio](https://github.com/emaginebr/avabot-app) | [Website](https://emagine.com.br/avabot)
 
 ---
 
-## O que e o Avachat App?
+## O que e o AvaBot App?
 
-O Avachat App e a interface frontend da plataforma Avachat. E uma aplicacao React moderna que permite criar, configurar e gerenciar agentes de IA conversacionais de forma visual e intuitiva.
+O AvaBot App e a interface frontend da plataforma AvaBot. E uma aplicacao React moderna que permite criar, configurar e gerenciar agentes de IA conversacionais de forma visual e intuitiva.
 
 Atraves dele, usuarios podem criar agentes com prompts personalizados, fazer upload de bases de conhecimento, acompanhar conversas em tempo real, coletar leads e incorporar widgets de chat em qualquer site. A comunicacao com o backend acontece via API REST e WebSocket para streaming de respostas.
 
-O Avachat App e a camada de apresentacao do ecossistema Avachat, consumindo a API backend para todas as operacoes.
+O AvaBot App e a camada de apresentacao do ecossistema AvaBot, consumindo a API backend para todas as operacoes.
 
 ---
 
@@ -47,7 +47,7 @@ O Avachat App e a camada de apresentacao do ecossistema Avachat, consumindo a AP
 
 ## Arquitetura e Integracoes
 
-O frontend e uma SPA (Single Page Application) servida por Nginx em producao. Todas as requisicoes para `/api/` e `/ws/` sao redirecionadas via reverse proxy para o backend Avachat na porta 8080.
+O frontend e uma SPA (Single Page Application) servida por Nginx em producao. Todas as requisicoes para `/api/` e `/ws/` sao redirecionadas via reverse proxy para o backend AvaBot na porta 8080.
 
 A comunicacao em tempo real utiliza WebSocket nativo com eventos estruturados: `ready` (conexao estabelecida), `message` (mensagem do usuario), `chunk` (token da resposta), `done` (resposta completa) e `error` (erro).
 
@@ -85,7 +85,7 @@ R: O build gera arquivos estaticos servidos por Nginx. O Docker multi-stage cuid
 ### Comerciais
 
 **P: O frontend e vendido separadamente do backend?**
-R: O Avachat App faz parte do pacote Avachat. Entre em contato com a equipe comercial para detalhes.
+R: O AvaBot App faz parte do pacote AvaBot. Entre em contato com a equipe comercial para detalhes.
 
 **P: Posso customizar a interface com minha marca?**
 R: Sim, o widget permite personalizacao de cores e avatar. Customizacoes mais profundas podem ser feitas sob demanda.
@@ -97,7 +97,7 @@ R: Sim, o widget permite personalizacao de cores e avatar. Customizacoes mais pr
 1. Clone o repositorio e instale as dependencias: `npm install`
 2. Configure o `.env` com `VITE_API_URL` e `VITE_WS_URL` apontando para o backend
 3. Inicie o desenvolvimento: `npm run dev`
-4. Para producao com Docker: `docker build -t avachat-app . && docker run -d -p 80:80 avachat-app`
+4. Para producao com Docker: `docker build -t avabot-app . && docker run -d -p 80:80 avabot-app`
 
 ---
 
@@ -112,8 +112,8 @@ R: Sim, o widget permite personalizacao de cores e avatar. Customizacoes mais pr
 
 ## Contato e Suporte
 
-- **Website**: https://emagine.com.br/avachat
-- **Repositorio**: https://github.com/emaginebr/avachat-app
+- **Website**: https://emagine.com.br/avabot
+- **Repositorio**: https://github.com/emaginebr/avabot-app
 - **Suporte**: Entre em contato pelo site da Emagine
 
 ---

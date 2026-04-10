@@ -55,7 +55,7 @@ Utilitarios inclusos: validacao de CPF, CNPJ, email, formatacao de telefone e ve
 ### Produtos Emagine Relacionados
 
 - **NAuth** — Backend de autenticacao que esta biblioteca consome
-- **Todos os frontends Emagine** — avachat-app, dedalo-app, devblog, MonexUp e outros utilizam nauth-react para autenticacao
+- **Todos os frontends Emagine** — avabot-app, dedalo-app, devblog, MonexUp e outros utilizam nauth-react para autenticacao
 
 ---
 

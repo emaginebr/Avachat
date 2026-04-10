@@ -18,7 +18,7 @@ jobs:
         script: |
           set -e
 
-          DEPLOY_DIR="/opt/avachat"
+          DEPLOY_DIR="/opt/avabot"
           REPO_URL="https://github.com/${{ github.repository }}.git"
           BRANCH="main"
 
@@ -37,11 +37,11 @@ jobs:
 
           # Inject .env.prod from GitHub Secrets
           cat > .env.prod <<'ENVEOF'
-          AVACHAT_CONNECTION_STRING=${{ secrets.AVACHAT_CONNECTION_STRING }}
+          AVABOT_CONNECTION_STRING=${{ secrets.AVABOT_CONNECTION_STRING }}
           OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-          AVACHAT_USERNAME=${{ secrets.AVACHAT_USERNAME }}
-          AVACHAT_PASSWORD=${{ secrets.AVACHAT_PASSWORD }}
-          AVACHAT_JWT_SECRET=${{ secrets.AVACHAT_JWT_SECRET }}
+          AVABOT_USERNAME=${{ secrets.AVABOT_USERNAME }}
+          AVABOT_PASSWORD=${{ secrets.AVABOT_PASSWORD }}
+          AVABOT_JWT_SECRET=${{ secrets.AVABOT_JWT_SECRET }}
           ENVEOF
 
           # Remove leading whitespace from .env.prod

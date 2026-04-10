@@ -33,7 +33,7 @@ Create this directory if it does not exist.
 
 Use **kebab-case** based on the repository name, prefixed with `emagine-`:
 
-- `Avachat` → `emagine-avachat.md`
+- `Avachat` → `emagine-avabot.md`
 - `NAuth` → `emagine-nauth.md`
 - `ProxyPay` → `emagine-proxypay.md`
 - `lofn-react` → `emagine-lofn-react.md`

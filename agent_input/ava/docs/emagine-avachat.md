@@ -1,18 +1,18 @@
-# Avachat
+# AvaBot
 
 > Plataforma de chatbots inteligentes com IA para atendimento, vendas e suporte ao cliente.
 
-**Produto Emagine** | [Repositorio](https://github.com/emaginebr/Avachat) | [Website](https://emagine.com.br/avachat)
+**Produto Emagine** | [Repositorio](https://github.com/emaginebr/AvaBot) | [Website](https://emagine.com.br/avabot)
 
 ---
 
-## O que e o Avachat?
+## O que e o AvaBot?
 
-O Avachat e a plataforma de chatbots com inteligencia artificial da Emagine. Ele permite que empresas criem agentes de IA personalizados que conversam com visitantes do site em tempo real, respondendo duvidas, coletando leads e oferecendo suporte automatizado 24 horas por dia.
+O AvaBot e a plataforma de chatbots com inteligencia artificial da Emagine. Ele permite que empresas criem agentes de IA personalizados que conversam com visitantes do site em tempo real, respondendo duvidas, coletando leads e oferecendo suporte automatizado 24 horas por dia.
 
 Cada agente pode ter sua propria base de conhecimento, personalidade e aparencia visual. O sistema utiliza RAG (Retrieval-Augmented Generation) para buscar informacoes relevantes na base de conhecimento antes de responder, garantindo respostas precisas e contextualizadas.
 
-O Avachat e composto por uma API backend robusta (C#/.NET) e um frontend moderno (React/TypeScript), ambos disponiveis como produtos separados que trabalham em conjunto.
+O AvaBot e composto por uma API backend robusta (C#/.NET) e um frontend moderno (React/TypeScript), ambos disponiveis como produtos separados que trabalham em conjunto.
 
 ---
 
@@ -50,7 +50,7 @@ O Avachat e composto por uma API backend robusta (C#/.NET) e um frontend moderno
 
 ## Arquitetura e Integracoes
 
-O Avachat segue uma arquitetura Clean Architecture com camadas bem definidas: Domain, Application, Infrastructure e API.
+O AvaBot segue uma arquitetura Clean Architecture com camadas bem definidas: Domain, Application, Infrastructure e API.
 
 O fluxo RAG funciona assim: a mensagem do usuario e convertida em embedding via OpenAI, depois e feita uma busca hibrida no Elasticsearch (vetorial + textual), os resultados mais relevantes sao incluidos no prompt, e a resposta e gerada pelo GPT-4o com streaming via WebSocket.
 
@@ -58,7 +58,7 @@ A API REST expoe endpoints para CRUD de agentes, sessoes, mensagens e arquivos d
 
 ### Produtos Emagine Relacionados
 
-- **avachat-app** — Frontend React que consome a API do Avachat
+- **avabot-app** — Frontend React que consome a API do AvaBot
 - **NAuth** — Autenticacao e gerenciamento de usuarios
 - **emagine-deploy** — Deploy e hospedagem do servico
 
@@ -82,7 +82,7 @@ A API REST expoe endpoints para CRUD de agentes, sessoes, mensagens e arquivos d
 R: Atualmente o sistema aceita arquivos no formato Markdown (.md), com tamanho maximo de 10MB por arquivo.
 
 **P: Qual modelo de IA e utilizado?**
-R: O Avachat utiliza o GPT-4o da OpenAI para geracao de respostas e o modelo text-embedding-3-small para embeddings dos documentos.
+R: O AvaBot utiliza o GPT-4o da OpenAI para geracao de respostas e o modelo text-embedding-3-small para embeddings dos documentos.
 
 **P: Como funciona a busca na base de conhecimento?**
 R: Utilizamos busca hibrida combinando kNN (busca vetorial por similaridade semantica) e BM25 (busca textual por palavras-chave) via Elasticsearch, garantindo resultados precisos e relevantes.
@@ -111,7 +111,7 @@ R: Sim, o widget de chat permite customizacao completa de cores, avatar e posici
 R: A Emagine oferece suporte tecnico para implantacao e manutencao. Entre em contato pelo site para mais detalhes.
 
 **P: O sistema pode ser hospedado em infraestrutura propria?**
-R: Sim, o Avachat pode ser implantado em qualquer infraestrutura que suporte Docker, incluindo servidores proprios ou nuvem.
+R: Sim, o AvaBot pode ser implantado em qualquer infraestrutura que suporte Docker, incluindo servidores proprios ou nuvem.
 
 ---
 
@@ -122,7 +122,7 @@ R: Sim, o Avachat pode ser implantado em qualquer infraestrutura que suporte Doc
 3. Suba os servicos com Docker: `docker compose up -d --build`
 4. Acesse o Swagger em `http://localhost:5000/swagger` para explorar a API
 5. Crie seu primeiro agente via API e faca upload de documentos para a base de conhecimento
-6. Integre o widget do avachat-app no seu site
+6. Integre o widget do avabot-app no seu site
 
 ---
 
@@ -138,8 +138,8 @@ R: Sim, o Avachat pode ser implantado em qualquer infraestrutura que suporte Doc
 
 ## Contato e Suporte
 
-- **Website**: https://emagine.com.br/avachat
-- **Repositorio**: https://github.com/emaginebr/Avachat
+- **Website**: https://emagine.com.br/avabot
+- **Repositorio**: https://github.com/emaginebr/AvaBot
 - **Suporte**: Entre em contato pelo site da Emagine
 
 ---

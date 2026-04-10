@@ -42,7 +42,7 @@ de usuarios finais
 | IV. Convencoes de Codigo | PASS | PascalCase backend, camelCase frontend, arrow functions |
 | V. Convencoes de BD | PASS | snake_case, bigint PK, ClientSetNull, varchar c/ MaxLength |
 | VI. Autenticacao | PASS | Controllers admin com `[Authorize]` via NAuth |
-| VII. Variaveis de Ambiente | PASS | `VITE_` prefix, `ConnectionStrings__AvachatContext` |
+| VII. Variaveis de Ambiente | PASS | `VITE_` prefix, `ConnectionStrings__AvaBotContext` |
 | VIII. Tratamento de Erros | PASS | try/catch com StatusCode(500), handleError no frontend |
 
 ## Project Structure
@@ -67,7 +67,7 @@ specs/001-knowledge-agent-chatbot/
 
 ```text
 Backend/
-├── Avachat.API/
+├── AvaBot.API/
 │   ├── Controllers/
 │   │   ├── AgentController.cs
 │   │   ├── KnowledgeFileController.cs
@@ -75,7 +75,7 @@ Backend/
 │   ├── WebSocket/
 │   │   └── ChatWebSocketHandler.cs
 │   └── Program.cs
-├── Avachat.Domain/
+├── AvaBot.Domain/
 │   ├── Models/
 │   │   ├── Agent.cs
 │   │   ├── KnowledgeFile.cs
@@ -90,9 +90,9 @@ Backend/
 │   └── Enums/
 │       ├── ProcessingStatus.cs
 │       └── SenderType.cs
-├── Avachat.Infra/
+├── AvaBot.Infra/
 │   ├── Context/
-│   │   └── AvachatContext.cs
+│   │   └── AvaBotContext.cs
 │   ├── Repository/
 │   │   ├── AgentRepository.cs
 │   │   ├── KnowledgeFileRepository.cs
@@ -101,7 +101,7 @@ Backend/
 │   └── AppServices/
 │       ├── ElasticsearchService.cs
 │       └── OpenAIService.cs
-├── Avachat.Infra.Interfaces/
+├── AvaBot.Infra.Interfaces/
 │   ├── Repository/
 │   │   ├── IAgentRepository.cs
 │   │   ├── IKnowledgeFileRepository.cs
@@ -110,7 +110,7 @@ Backend/
 │   └── AppServices/
 │       ├── IElasticsearchService.cs
 │       └── IOpenAIService.cs
-└── Avachat.Application/
+└── AvaBot.Application/
     └── DependencyInjection.cs
 
 Frontend/

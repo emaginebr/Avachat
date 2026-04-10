@@ -19,7 +19,7 @@
 
 **Purpose**: Instalar dependencias e configurar variaveis de ambiente
 
-- [x] T001 Instalar pacote NuGet `Telegram.Bot` no projeto Avachat.Infra.csproj
+- [x] T001 Instalar pacote NuGet `Telegram.Bot` no projeto AvaBot.Infra.csproj
 - [x] T002 [P] Adicionar variaveis de ambiente ao .env.example: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `TELEGRAM_WEBHOOK_URL`, `TELEGRAM_AGENT_SLUG`
 
 ---
@@ -30,13 +30,13 @@
 
 **CRITICAL**: Nenhuma user story pode iniciar ate esta fase estar completa
 
-- [x] T003 Adicionar propriedade `ResumeToken` (string, max 32) ao modelo `ChatSession` em Avachat.Domain/Models/ChatSession.cs
-- [x] T004 Criar modelo `TelegramChat` em Avachat.Domain/Models/TelegramChat.cs conforme data-model.md (TelegramChatId bigint PK, AgentId FK, ChatSessionId FK, TelegramUsername, TelegramFirstName, CreatedAt, UpdatedAt)
-- [x] T005 Adicionar `DbSet<TelegramChat>` e configurar Fluent API no Avachat.Infra/Context/AvachatContext.cs (tabela `avachat_telegram_chats`, indice unico em `resume_token`, FKs com CASCADE, coluna `resume_token` varchar(32) NOT NULL com indice unico na tabela `avachat_chat_sessions`)
+- [x] T003 Adicionar propriedade `ResumeToken` (string, max 32) ao modelo `ChatSession` em AvaBot.Domain/Models/ChatSession.cs
+- [x] T004 Criar modelo `TelegramChat` em AvaBot.Domain/Models/TelegramChat.cs conforme data-model.md (TelegramChatId bigint PK, AgentId FK, ChatSessionId FK, TelegramUsername, TelegramFirstName, CreatedAt, UpdatedAt)
+- [x] T005 Adicionar `DbSet<TelegramChat>` e configurar Fluent API no AvaBot.Infra/Context/AvaBotContext.cs (tabela `avabot_telegram_chats`, indice unico em `resume_token`, FKs com CASCADE, coluna `resume_token` varchar(32) NOT NULL com indice unico na tabela `avabot_chat_sessions`)
 - [x] T006 Criar migracao EF Core: `dotnet ef migrations add AddResumeTokenAndTelegramChat` e gerar SQL para popular `resume_token` em sessoes existentes com GUIDs
-- [x] T007 Adicionar propriedade `ResumeToken` ao DTO `ChatSessionInfo` em Avachat.DTO/ChatDTOs.cs
-- [x] T008 [P] Criar DTO `ChatSessionResumeInfo` em Avachat.DTO/ChatDTOs.cs (herda campos de ChatSessionInfo + lista de ChatMessageInfo para as ultimas 10 mensagens)
-- [x] T009 Atualizar `ChatSessionProfile` no AutoMapper em Avachat.Application/Profiles/ para mapear `ResumeToken`
+- [x] T007 Adicionar propriedade `ResumeToken` ao DTO `ChatSessionInfo` em AvaBot.DTO/ChatDTOs.cs
+- [x] T008 [P] Criar DTO `ChatSessionResumeInfo` em AvaBot.DTO/ChatDTOs.cs (herda campos de ChatSessionInfo + lista de ChatMessageInfo para as ultimas 10 mensagens)
+- [x] T009 Atualizar `ChatSessionProfile` no AutoMapper em AvaBot.Application/Profiles/ para mapear `ResumeToken`
 
 **Checkpoint**: Modelo de dados pronto, migracoes aplicadas, DTOs atualizados
 
@@ -50,14 +50,14 @@
 
 ### Implementation
 
-- [x] T010 [US1] Atualizar `ChatService.CreateSessionAsync` em Avachat.Application/Services/ChatService.cs para gerar `ResumeToken = Guid.NewGuid().ToString("N")` na criacao da sessao
-- [x] T011 [US1] Adicionar metodo `GetByResumeTokenAsync(string resumeToken)` a interface `IChatSessionRepository` em Avachat.Infra.Interfaces/Repository/IChatSessionRepository.cs
-- [x] T012 [US1] Implementar `GetByResumeTokenAsync` no `ChatSessionRepository` em Avachat.Infra/Repository/ChatSessionRepository.cs (busca por resume_token com include do Agent)
-- [x] T013 [US1] Adicionar metodo `GetLastBySessionIdAsync(long sessionId, int count = 10)` a interface `IChatMessageRepository` em Avachat.Infra.Interfaces/Repository/IChatMessageRepository.cs
-- [x] T014 [US1] Implementar `GetLastBySessionIdAsync` no `ChatMessageRepository` em Avachat.Infra/Repository/ChatMessageRepository.cs (ultimas N mensagens ordenadas cronologicamente)
-- [x] T015 [US1] Criar endpoint `GET /sessions/resume/{slug}` no `SessionController` em Avachat.API/Controllers/SessionController.cs conforme contrato em contracts/session-resume-api.md (AllowAnonymous, header X-Resume-Token, retorna sessao + ultimas 10 mensagens)
+- [x] T010 [US1] Atualizar `ChatService.CreateSessionAsync` em AvaBot.Application/Services/ChatService.cs para gerar `ResumeToken = Guid.NewGuid().ToString("N")` na criacao da sessao
+- [x] T011 [US1] Adicionar metodo `GetByResumeTokenAsync(string resumeToken)` a interface `IChatSessionRepository` em AvaBot.Infra.Interfaces/Repository/IChatSessionRepository.cs
+- [x] T012 [US1] Implementar `GetByResumeTokenAsync` no `ChatSessionRepository` em AvaBot.Infra/Repository/ChatSessionRepository.cs (busca por resume_token com include do Agent)
+- [x] T013 [US1] Adicionar metodo `GetLastBySessionIdAsync(long sessionId, int count = 10)` a interface `IChatMessageRepository` em AvaBot.Infra.Interfaces/Repository/IChatMessageRepository.cs
+- [x] T014 [US1] Implementar `GetLastBySessionIdAsync` no `ChatMessageRepository` em AvaBot.Infra/Repository/ChatMessageRepository.cs (ultimas N mensagens ordenadas cronologicamente)
+- [x] T015 [US1] Criar endpoint `GET /sessions/resume/{slug}` no `SessionController` em AvaBot.API/Controllers/SessionController.cs conforme contrato em contracts/session-resume-api.md (AllowAnonymous, header X-Resume-Token, retorna sessao + ultimas 10 mensagens)
 - [x] T016 [US2] Atualizar o endpoint `POST /sessions/agents/{slug}` no `SessionController` para retornar `resumeToken` na resposta (ja incluido pelo AutoMapper apos T009 e T010)
-- [x] T017 [US2] Atualizar o evento `ready` no `ChatWebSocketHandler` em Avachat.API/WebSocket/ChatWebSocketHandler.cs para incluir campo `resumeToken` na mensagem JSON enviada ao cliente
+- [x] T017 [US2] Atualizar o evento `ready` no `ChatWebSocketHandler` em AvaBot.API/WebSocket/ChatWebSocketHandler.cs para incluir campo `resumeToken` na mensagem JSON enviada ao cliente
 
 **Checkpoint**: Resume token funcional. Sessoes criadas via REST e WebSocket retornam token. Endpoint de retomada retorna sessao com ultimas 10 mensagens.
 
@@ -71,11 +71,11 @@
 
 ### Implementation
 
-- [x] T018 [P] [US3] Criar interface `ITelegramChatRepository` em Avachat.Infra.Interfaces/Repository/ITelegramChatRepository.cs (GetByChatIdAsync, CreateAsync, UpdateAsync)
-- [x] T019 [P] [US3] Implementar `TelegramChatRepository` em Avachat.Infra/Repository/TelegramChatRepository.cs
-- [x] T020 [US3] Criar `TelegramService` em Avachat.Application/Services/TelegramService.cs com metodos: ProcessUpdateAsync(Update), HandleTextMessageAsync(Message), HandleStartCommandAsync(Message), SendMessageAsync(chatId, text). Usar ChatService para processar mensagens e Telegram.Bot TelegramBotClient para enviar respostas
-- [x] T021 [US4] Criar `TelegramController` em Avachat.API/Controllers/TelegramController.cs conforme contrato em contracts/telegram-webhook-api.md com endpoints: POST /telegram/webhook (AllowAnonymous, valida X-Telegram-Bot-Api-Secret-Token) e POST /telegram/setup-webhook (Authorize)
-- [x] T022 [US3] Registrar servicos no DI em Avachat.API/Program.cs: TelegramBotClient como singleton (token via env), TelegramService como scoped, TelegramChatRepository como scoped. Ler configuracoes: TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_WEBHOOK_URL, TELEGRAM_AGENT_SLUG
+- [x] T018 [P] [US3] Criar interface `ITelegramChatRepository` em AvaBot.Infra.Interfaces/Repository/ITelegramChatRepository.cs (GetByChatIdAsync, CreateAsync, UpdateAsync)
+- [x] T019 [P] [US3] Implementar `TelegramChatRepository` em AvaBot.Infra/Repository/TelegramChatRepository.cs
+- [x] T020 [US3] Criar `TelegramService` em AvaBot.Application/Services/TelegramService.cs com metodos: ProcessUpdateAsync(Update), HandleTextMessageAsync(Message), HandleStartCommandAsync(Message), SendMessageAsync(chatId, text). Usar ChatService para processar mensagens e Telegram.Bot TelegramBotClient para enviar respostas
+- [x] T021 [US4] Criar `TelegramController` em AvaBot.API/Controllers/TelegramController.cs conforme contrato em contracts/telegram-webhook-api.md com endpoints: POST /telegram/webhook (AllowAnonymous, valida X-Telegram-Bot-Api-Secret-Token) e POST /telegram/setup-webhook (Authorize)
+- [x] T022 [US3] Registrar servicos no DI em AvaBot.API/Program.cs: TelegramBotClient como singleton (token via env), TelegramService como scoped, TelegramChatRepository como scoped. Ler configuracoes: TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET, TELEGRAM_WEBHOOK_URL, TELEGRAM_AGENT_SLUG
 - [x] T023 [US3] Implementar tratamento de mensagens nao-texto no TelegramService: responder com mensagem informativa "Desculpe, eu so consigo processar mensagens de texto."
 - [x] T024 [US4] Implementar logica de setup-webhook no TelegramService: chamar setWebhook na API Telegram com url, secret_token e allowed_updates=["message"]
 
@@ -87,7 +87,7 @@
 
 **Purpose**: Melhorias que afetam multiplas user stories
 
-- [x] T025 [P] Adicionar logging (ILogger) nos novos servicos: TelegramService e nos novos metodos do ChatService em Avachat.Application/Services/
+- [x] T025 [P] Adicionar logging (ILogger) nos novos servicos: TelegramService e nos novos metodos do ChatService em AvaBot.Application/Services/
 - [x] T026 [P] Atualizar documentacao Swagger com descricoes para os novos endpoints no SessionController e TelegramController
 - [x] T027 Validar fluxo completo via quickstart.md: criar sessao, verificar resumeToken, retomar sessao, registrar webhook, testar bot Telegram
 

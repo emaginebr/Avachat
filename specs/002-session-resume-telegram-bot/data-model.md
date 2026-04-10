@@ -22,7 +22,7 @@ Entidade existente que ganha um novo campo.
 | StartedAt | timestamp | not null | Existente |
 | EndedAt | timestamp | nullable | Existente |
 
-**Indice novo**: `ix_avachat_chat_sessions_resume_token` UNIQUE em `resume_token`
+**Indice novo**: `ix_avabot_chat_sessions_resume_token` UNIQUE em `resume_token`
 
 **Regras**:
 - ResumeToken e gerado automaticamente na criacao da sessao via `Guid.NewGuid().ToString("N")`
@@ -33,7 +33,7 @@ Entidade existente que ganha um novo campo.
 
 ### TelegramChat (Nova)
 
-Mapeia um chat do Telegram para uma sessao ativa do Avachat.
+Mapeia um chat do Telegram para uma sessao ativa do AvaBot.
 
 | Field | Type | Constraints | Notes |
 |-------|------|-------------|-------|
@@ -45,10 +45,10 @@ Mapeia um chat do Telegram para uma sessao ativa do Avachat.
 | CreatedAt | timestamp | not null | Data de criacao do registro |
 | UpdatedAt | timestamp | not null | Data da ultima atualizacao |
 
-**Tabela**: `avachat_telegram_chats`  
-**PK Constraint**: `avachat_telegram_chats_pkey`  
-**FK**: `fk_telegram_chat_agent` -> `avachat_agents(agent_id)`  
-**FK**: `fk_telegram_chat_session` -> `avachat_chat_sessions(chat_session_id)`
+**Tabela**: `avabot_telegram_chats`  
+**PK Constraint**: `avabot_telegram_chats_pkey`  
+**FK**: `fk_telegram_chat_agent` -> `avabot_agents(agent_id)`  
+**FK**: `fk_telegram_chat_session` -> `avabot_chat_sessions(chat_session_id)`
 
 **Regras**:
 - Cada `telegram_chat_id` mapeia para exatamente uma sessao ativa por vez
@@ -96,6 +96,6 @@ ChatSession (1) ----< (N) TelegramChat  [1 ativa por TelegramChat]
 
 ## Migration Notes
 
-- Adicionar coluna `resume_token` a `avachat_chat_sessions` com valor default para registros existentes (gerar GUIDs para sessoes existentes via SQL)
-- Criar tabela `avachat_telegram_chats`
+- Adicionar coluna `resume_token` a `avabot_chat_sessions` com valor default para registros existentes (gerar GUIDs para sessoes existentes via SQL)
+- Criar tabela `avabot_telegram_chats`
 - Criar indice unico em `resume_token`

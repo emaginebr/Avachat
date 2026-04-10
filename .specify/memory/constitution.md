@@ -26,7 +26,7 @@
   Follow-up TODOs: none
 -->
 
-# Avachat Constitution
+# AvaBot Constitution
 
 ## Core Principles
 
@@ -110,13 +110,13 @@ Todos os imports DEVEM corresponder exatamente ao casing no disco.
 
 | Elemento | Convencao | Exemplo |
 |---|---|---|
-| Namespaces | PascalCase | `Avachat.Domain.Services` |
+| Namespaces | PascalCase | `AvaBot.Domain.Services` |
 | Classes / Interfaces | PascalCase | `CampaignService`, `ICampaignRepository` |
 | Metodos | PascalCase | `GetById()`, `MapToDto()` |
 | Propriedades | PascalCase | `CampaignId`, `CreatedAt` |
 | Campos privados | _camelCase | `_repository`, `_context` |
 | Constantes | UPPER_CASE | `BUCKET_NAME` |
-| Namespaces | File-scoped | `namespace Avachat.API;` |
+| Namespaces | File-scoped | `namespace AvaBot.API;` |
 
 #### Frontend (TypeScript/React)
 
@@ -177,7 +177,7 @@ detalhados na skill `dotnet-architecture`.
 
 | Variavel | Obrigatoria | Descricao |
 |---|---|---|
-| `ConnectionStrings__AvachatContext` | Sim | Connection string PostgreSQL |
+| `ConnectionStrings__AvaBotContext` | Sim | Connection string PostgreSQL |
 | `ASPNETCORE_ENVIRONMENT` | Sim | Development, Docker, Production |
 
 #### Frontend

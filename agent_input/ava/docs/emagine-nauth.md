@@ -60,7 +60,7 @@ Tenants configurados incluem: emagine (padrao), viralt, devblog e bazzuca.
 ### Produtos Emagine Relacionados
 
 - **nauth-react** — Biblioteca React com componentes de login, registro e gerenciamento de usuarios
-- **Todos os produtos backend** — Avachat, Brahma, Lofn, Dedalo, NNews, ProxyPay, BazzucaMedia e MonexUp utilizam NAuth para autenticacao
+- **Todos os produtos backend** — AvaBot, Brahma, Lofn, Dedalo, NNews, ProxyPay, BazzucaMedia e MonexUp utilizam NAuth para autenticacao
 - **zTools** — Processamento de imagens de perfil
 
 ---

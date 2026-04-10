@@ -15,7 +15,7 @@
 
 ## Path Conventions
 
-- **Backend**: `Backend/Avachat.API/`, `Backend/Avachat.Domain/`, `Backend/Avachat.Infra/`, `Backend/Avachat.Infra.Interfaces/`, `Backend/Avachat.Application/`
+- **Backend**: `Backend/AvaBot.API/`, `Backend/AvaBot.Domain/`, `Backend/AvaBot.Infra/`, `Backend/AvaBot.Infra.Interfaces/`, `Backend/AvaBot.Application/`
 - **Frontend**: `Frontend/src/`
 
 ---
@@ -24,12 +24,12 @@
 
 **Purpose**: Inicializacao dos projetos e estrutura base
 
-- [x] T001 Criar solution .NET 9 com 5 projetos (Avachat.API, Avachat.Domain, Avachat.Infra, Avachat.Infra.Interfaces, Avachat.Application) e configurar dependencias entre projetos em Backend/Avachat.sln
+- [x] T001 Criar solution .NET 9 com 5 projetos (AvaBot.API, AvaBot.Domain, AvaBot.Infra, AvaBot.Infra.Interfaces, AvaBot.Application) e configurar dependencias entre projetos em Backend/AvaBot.sln
 - [x] T002 Instalar pacotes NuGet: EntityFrameworkCore.Design, Npgsql.EntityFrameworkCore.PostgreSQL, Elastic.Clients.Elasticsearch, OpenAI, MediatR, FluentValidation.AspNetCore, Swashbuckle em Backend/
 - [x] T003 [P] Criar projeto React 19 + TypeScript com Vite em Frontend/chatbot-app/ e instalar dependencias: zustand, tailwindcss, react-markdown, react-dropzone, react-router-dom
 - [x] T004 [P] Configurar TailwindCSS em Frontend/chatbot-app/vite.config.ts e Frontend/chatbot-app/src/index.css
-- [x] T005 Configurar appsettings.json e appsettings.Development.json com ConnectionStrings, Elasticsearch, OpenAI e Chat sections em Backend/Avachat.API/
-- [x] T006 Configurar Program.cs com DI, CORS, Swagger, WebSocket middleware, EF Core e MediatR em Backend/Avachat.API/Program.cs
+- [x] T005 Configurar appsettings.json e appsettings.Development.json com ConnectionStrings, Elasticsearch, OpenAI e Chat sections em Backend/AvaBot.API/
+- [x] T006 Configurar Program.cs com DI, CORS, Swagger, WebSocket middleware, EF Core e MediatR em Backend/AvaBot.API/Program.cs
 - [x] T007 [P] Configurar Docker Compose com servicos api, frontend, postgres, elasticsearch e kibana em docker-compose.yml
 
 ---
@@ -38,24 +38,24 @@
 
 **Purpose**: Infraestrutura core que DEVE estar pronta antes de qualquer user story
 
-- [x] T008 [P] Criar enums ProcessingStatus (Processing=0, Ready=1, Error=2) em Backend/Avachat.Domain/Enums/ProcessingStatus.cs
-- [x] T009 [P] Criar enum SenderType (User=0, Assistant=1) em Backend/Avachat.Domain/Enums/SenderType.cs
-- [x] T010 [P] Criar model Agent com todas as propriedades (Name, Slug, Description, SystemPrompt, Status, CollectName, CollectEmail, CollectPhone, timestamps) em Backend/Avachat.Domain/Models/Agent.cs
-- [x] T011 [P] Criar model KnowledgeFile com propriedades (AgentId, FileName, FileContent, FileSize, ProcessingStatus, ErrorMessage, timestamps) em Backend/Avachat.Domain/Models/KnowledgeFile.cs
-- [x] T012 [P] Criar model ChatSession com propriedades (AgentId, UserName, UserEmail, UserPhone, StartedAt, EndedAt) em Backend/Avachat.Domain/Models/ChatSession.cs
-- [x] T013 [P] Criar model ChatMessage com propriedades (ChatSessionId, SenderType, Content, CreatedAt) em Backend/Avachat.Domain/Models/ChatMessage.cs
-- [x] T014 Criar AvachatContext com DbSets e Fluent API (snake_case, constraints, relacionamentos, ClientSetNull) em Backend/Avachat.Infra/Context/AvachatContext.cs
-- [ ] T015 Gerar e aplicar migration inicial com `dotnet ef migrations add InitialCreate` em Backend/Avachat.Infra/ (REQUER PostgreSQL rodando)
-- [x] T016 [P] Criar interfaces de repositorio IAgentRepository, IKnowledgeFileRepository, IChatSessionRepository, IChatMessageRepository em Backend/Avachat.Infra.Interfaces/Repository/
-- [x] T017 [P] Criar interface IElasticsearchService (CreateIndex, IndexChunks, DeleteChunksByFileId, HybridSearch) em Backend/Avachat.Infra.Interfaces/AppServices/IElasticsearchService.cs
-- [x] T018 [P] Criar interface IOpenAIService (GenerateEmbedding, StreamChatCompletion) em Backend/Avachat.Infra.Interfaces/AppServices/IOpenAIService.cs
-- [x] T019 [P] Implementar AgentRepository com CRUD e busca por slug em Backend/Avachat.Infra/Repository/AgentRepository.cs
-- [x] T020 [P] Implementar KnowledgeFileRepository em Backend/Avachat.Infra/Repository/KnowledgeFileRepository.cs
-- [x] T021 [P] Implementar ChatSessionRepository em Backend/Avachat.Infra/Repository/ChatSessionRepository.cs
-- [x] T022 [P] Implementar ChatMessageRepository em Backend/Avachat.Infra/Repository/ChatMessageRepository.cs
-- [x] T023 Implementar ElasticsearchService (criar indice knowledge_chunks, indexar/deletar chunks, busca hibrida kNN+BM25 com RRF) em Backend/Avachat.Infra/AppServices/ElasticsearchService.cs
-- [x] T024 Implementar OpenAIService (gerar embeddings com text-embedding-3-small, streaming chat completion com gpt-4o) em Backend/Avachat.Infra/AppServices/OpenAIService.cs
-- [x] T025 Registrar todos os services, repositories e app services no DI em Backend/Avachat.Application/DependencyInjection.cs
+- [x] T008 [P] Criar enums ProcessingStatus (Processing=0, Ready=1, Error=2) em Backend/AvaBot.Domain/Enums/ProcessingStatus.cs
+- [x] T009 [P] Criar enum SenderType (User=0, Assistant=1) em Backend/AvaBot.Domain/Enums/SenderType.cs
+- [x] T010 [P] Criar model Agent com todas as propriedades (Name, Slug, Description, SystemPrompt, Status, CollectName, CollectEmail, CollectPhone, timestamps) em Backend/AvaBot.Domain/Models/Agent.cs
+- [x] T011 [P] Criar model KnowledgeFile com propriedades (AgentId, FileName, FileContent, FileSize, ProcessingStatus, ErrorMessage, timestamps) em Backend/AvaBot.Domain/Models/KnowledgeFile.cs
+- [x] T012 [P] Criar model ChatSession com propriedades (AgentId, UserName, UserEmail, UserPhone, StartedAt, EndedAt) em Backend/AvaBot.Domain/Models/ChatSession.cs
+- [x] T013 [P] Criar model ChatMessage com propriedades (ChatSessionId, SenderType, Content, CreatedAt) em Backend/AvaBot.Domain/Models/ChatMessage.cs
+- [x] T014 Criar AvaBotContext com DbSets e Fluent API (snake_case, constraints, relacionamentos, ClientSetNull) em Backend/AvaBot.Infra/Context/AvaBotContext.cs
+- [ ] T015 Gerar e aplicar migration inicial com `dotnet ef migrations add InitialCreate` em Backend/AvaBot.Infra/ (REQUER PostgreSQL rodando)
+- [x] T016 [P] Criar interfaces de repositorio IAgentRepository, IKnowledgeFileRepository, IChatSessionRepository, IChatMessageRepository em Backend/AvaBot.Infra.Interfaces/Repository/
+- [x] T017 [P] Criar interface IElasticsearchService (CreateIndex, IndexChunks, DeleteChunksByFileId, HybridSearch) em Backend/AvaBot.Infra.Interfaces/AppServices/IElasticsearchService.cs
+- [x] T018 [P] Criar interface IOpenAIService (GenerateEmbedding, StreamChatCompletion) em Backend/AvaBot.Infra.Interfaces/AppServices/IOpenAIService.cs
+- [x] T019 [P] Implementar AgentRepository com CRUD e busca por slug em Backend/AvaBot.Infra/Repository/AgentRepository.cs
+- [x] T020 [P] Implementar KnowledgeFileRepository em Backend/AvaBot.Infra/Repository/KnowledgeFileRepository.cs
+- [x] T021 [P] Implementar ChatSessionRepository em Backend/AvaBot.Infra/Repository/ChatSessionRepository.cs
+- [x] T022 [P] Implementar ChatMessageRepository em Backend/AvaBot.Infra/Repository/ChatMessageRepository.cs
+- [x] T023 Implementar ElasticsearchService (criar indice knowledge_chunks, indexar/deletar chunks, busca hibrida kNN+BM25 com RRF) em Backend/AvaBot.Infra/AppServices/ElasticsearchService.cs
+- [x] T024 Implementar OpenAIService (gerar embeddings com text-embedding-3-small, streaming chat completion com gpt-4o) em Backend/AvaBot.Infra/AppServices/OpenAIService.cs
+- [x] T025 Registrar todos os services, repositories e app services no DI em Backend/AvaBot.Application/DependencyInjection.cs
 - [x] T026 [P] Criar tipos base do frontend: agent.ts, knowledgeFile.ts, chatSession.ts, chatMessage.ts em Frontend/chatbot-app/src/types/
 - [x] T027 [P] Configurar roteamento React Router com rotas admin e chat em Frontend/chatbot-app/src/App.tsx e Frontend/chatbot-app/src/main.tsx
 
@@ -71,10 +71,10 @@
 
 ### Implementation for User Story 1
 
-- [x] T028 [US1] Criar AgentService com metodos CRUD, validacao de slug unico e toggle de status em Backend/Avachat.Application/Services/AgentService.cs
-- [x] T029 [US1] Criar DTOs AgentInfo, AgentInsertInfo, AgentChatConfigInfo e Result<T> com JsonPropertyName em Backend/Avachat.Domain/DTOs/AgentDTOs.cs
-- [x] T030 [US1] Criar validador FluentValidation para AgentInsertInfo em Backend/Avachat.API/Validators/AgentInsertInfoValidator.cs
-- [x] T031 [US1] Criar AgentController com endpoints CRUD + chat-config + toggle status em Backend/Avachat.API/Controllers/AgentController.cs
+- [x] T028 [US1] Criar AgentService com metodos CRUD, validacao de slug unico e toggle de status em Backend/AvaBot.Application/Services/AgentService.cs
+- [x] T029 [US1] Criar DTOs AgentInfo, AgentInsertInfo, AgentChatConfigInfo e Result<T> com JsonPropertyName em Backend/AvaBot.Domain/DTOs/AgentDTOs.cs
+- [x] T030 [US1] Criar validador FluentValidation para AgentInsertInfo em Backend/AvaBot.API/Validators/AgentInsertInfoValidator.cs
+- [x] T031 [US1] Criar AgentController com endpoints CRUD + chat-config + toggle status em Backend/AvaBot.API/Controllers/AgentController.cs
 - [x] T032 [P] [US1] Criar AgentService.ts com metodos CRUD usando Fetch API em Frontend/chatbot-app/src/Services/AgentService.ts
 - [x] T033 [P] [US1] Criar useAgentStore com Zustand em Frontend/chatbot-app/src/stores/useAgentStore.ts
 - [x] T034 [US1] Criar componente AgentForm em Frontend/chatbot-app/src/components/admin/AgentForm.tsx
@@ -93,9 +93,9 @@
 
 ### Implementation for User Story 2
 
-- [x] T037 [US2] Criar IngestionService com logica de chunking em Backend/Avachat.Application/Services/IngestionService.cs
+- [x] T037 [US2] Criar IngestionService com logica de chunking em Backend/AvaBot.Application/Services/IngestionService.cs
 - [x] T038 [US2] EmbeddingService integrado diretamente via IOpenAIService (wrapper nao necessario)
-- [x] T039 [US2] Criar KnowledgeFileController com 4 endpoints em Backend/Avachat.API/Controllers/KnowledgeFileController.cs
+- [x] T039 [US2] Criar KnowledgeFileController com 4 endpoints em Backend/AvaBot.API/Controllers/KnowledgeFileController.cs
 - [x] T040 [P] [US2] Criar KnowledgeFileService.ts em Frontend/chatbot-app/src/Services/KnowledgeFileService.ts
 - [x] T041 [P] [US2] Criar useKnowledgeFileStore em Frontend/chatbot-app/src/stores/useKnowledgeFileStore.ts
 - [x] T042 [US2] Criar componente FileUpload com React Dropzone em Frontend/chatbot-app/src/components/admin/FileUpload.tsx
@@ -116,7 +116,7 @@
 
 - [x] T045 [US3] Criar endpoint GET /api/agents/{slug}/chat-config (ja integrado no AgentController)
 - [x] T046 [US3] Criar componente UserDataForm em Frontend/chatbot-app/src/components/chat/UserDataForm.tsx
-- [x] T047 [US3] Criar ChatWebSocketHandler com identify + session creation em Backend/Avachat.API/WebSocket/ChatWebSocketHandler.cs
+- [x] T047 [US3] Criar ChatWebSocketHandler com identify + session creation em Backend/AvaBot.API/WebSocket/ChatWebSocketHandler.cs
 - [x] T048 [US3] Criar ChatPage com fluxo completo em Frontend/chatbot-app/src/pages/chat/ChatPage.tsx
 
 **Checkpoint**: Coleta de dados funcional. Agente pede dados antes de conversar. Sessao criada no banco com dados do usuario.
@@ -131,9 +131,9 @@
 
 ### Implementation for User Story 4
 
-- [x] T049 [US4] Criar SearchService em Backend/Avachat.Application/Services/SearchService.cs
-- [x] T050 [US4] Criar ChatService com orquestracao RAG completa em Backend/Avachat.Application/Services/ChatService.cs
-- [x] T051 [US4] ChatWebSocketHandler com loop de mensagens, streaming e error handling em Backend/Avachat.API/WebSocket/ChatWebSocketHandler.cs
+- [x] T049 [US4] Criar SearchService em Backend/AvaBot.Application/Services/SearchService.cs
+- [x] T050 [US4] Criar ChatService com orquestracao RAG completa em Backend/AvaBot.Application/Services/ChatService.cs
+- [x] T051 [US4] ChatWebSocketHandler com loop de mensagens, streaming e error handling em Backend/AvaBot.API/WebSocket/ChatWebSocketHandler.cs
 - [x] T052 [P] [US4] Criar hook useWebSocket em Frontend/chatbot-app/src/hooks/useWebSocket.ts
 - [x] T053 [P] [US4] Criar hook useChat em Frontend/chatbot-app/src/hooks/useChat.ts
 - [x] T054 [US4] Estado do chat gerenciado pelo hook useChat (store separado nao necessario)
@@ -168,7 +168,7 @@
 
 **Purpose**: Painel administrativo para consultar historico de sessoes e mensagens
 
-- [x] T064 Criar ChatSessionController com endpoints de historico em Backend/Avachat.API/Controllers/ChatSessionController.cs
+- [x] T064 Criar ChatSessionController com endpoints de historico em Backend/AvaBot.API/Controllers/ChatSessionController.cs
 - [x] T065 [P] Criar ChatHistoryService.ts em Frontend/chatbot-app/src/Services/ChatHistoryService.ts
 - [x] T066 Criar pagina ChatHistoryPage em Frontend/chatbot-app/src/pages/admin/ChatHistoryPage.tsx
 

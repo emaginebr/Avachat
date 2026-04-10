@@ -43,7 +43,7 @@
 
 ## R4: Armazenamento do Resume Token
 
-**Decision**: Adicionar coluna `resume_token varchar(32)` na tabela `avachat_chat_sessions` com indice unico.
+**Decision**: Adicionar coluna `resume_token varchar(32)` na tabela `avabot_chat_sessions` com indice unico.
 
 **Rationale**: O token e um atributo direto da sessao. Coluna com indice unico garante busca rapida (O(log n)) e unicidade. 32 caracteres e suficiente para GUID sem hifens.
 
@@ -53,9 +53,9 @@
 
 ---
 
-## R5: Mapeamento Telegram Chat -> Sessao Avachat
+## R5: Mapeamento Telegram Chat -> Sessao AvaBot
 
-**Decision**: Criar tabela `avachat_telegram_chats` com `telegram_chat_id` (bigint, PK), `agent_id` (FK), `chat_session_id` (FK). Quando /start e enviado, criar nova sessao e atualizar o registro.
+**Decision**: Criar tabela `avabot_telegram_chats` com `telegram_chat_id` (bigint, PK), `agent_id` (FK), `chat_session_id` (FK). Quando /start e enviado, criar nova sessao e atualizar o registro.
 
 **Rationale**: O `chat_id` do Telegram e unico por conversa privada e e do tipo long/bigint. Manter uma tabela separada permite rastrear a sessao ativa de cada usuario do Telegram e trocar quando /start e enviado.
 

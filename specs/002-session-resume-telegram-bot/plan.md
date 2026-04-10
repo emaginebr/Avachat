@@ -5,7 +5,7 @@
 
 ## Summary
 
-Adicionar funcionalidade de retomada de sessao (resume token) ao Avachat e integracao com Telegram Bot. O resume token e um GUID unico gerado na criacao de cada sessao, permitindo que usuarios retomem sua ultima conversa. O bot Telegram recebe mensagens via webhook, processa com o pipeline RAG existente e responde no Telegram.
+Adicionar funcionalidade de retomada de sessao (resume token) ao AvaBot e integracao com Telegram Bot. O resume token e um GUID unico gerado na criacao de cada sessao, permitindo que usuarios retomem sua ultima conversa. O bot Telegram recebe mensagens via webhook, processa com o pipeline RAG existente e responde no Telegram.
 
 ## Technical Context
 
@@ -56,24 +56,24 @@ specs/002-session-resume-telegram-bot/
 ### Source Code (repository root)
 
 ```text
-Avachat.Domain/
+AvaBot.Domain/
 ├── Models/
 │   ├── ChatSession.cs          # MODIFICAR: adicionar ResumeToken
 │   └── TelegramChat.cs         # NOVO: modelo do chat Telegram
 
-Avachat.DTO/
+AvaBot.DTO/
 ├── ChatDTOs.cs                 # MODIFICAR: adicionar ResumeToken ao ChatSessionInfo
 │                               # NOVO: ChatSessionResumeInfo (sessao + mensagens)
 └── TelegramDTOs.cs             # NOVO: DTOs do Telegram (se necessario)
 
-Avachat.Infra.Interfaces/
+AvaBot.Infra.Interfaces/
 └── Repository/
     ├── IChatSessionRepository.cs   # MODIFICAR: adicionar GetByResumeTokenAsync
     └── ITelegramChatRepository.cs  # NOVO: interface do repositorio Telegram
 
-Avachat.Infra/
+AvaBot.Infra/
 ├── Context/
-│   └── AvachatContext.cs        # MODIFICAR: adicionar DbSet<TelegramChat>, Fluent API
+│   └── AvaBotContext.cs        # MODIFICAR: adicionar DbSet<TelegramChat>, Fluent API
 ├── Repository/
 │   ├── ChatSessionRepository.cs # MODIFICAR: implementar GetByResumeTokenAsync
 │   └── TelegramChatRepository.cs # NOVO: repositorio Telegram
@@ -81,19 +81,19 @@ Avachat.Infra/
     ├── *_AddResumeToken.cs      # NOVO: migracao resume token
     └── *_AddTelegramChat.cs     # NOVO: migracao tabela Telegram
 
-Avachat.Application/
+AvaBot.Application/
 └── Services/
     ├── ChatService.cs           # MODIFICAR: gerar ResumeToken na criacao
     └── TelegramService.cs       # NOVO: logica do bot Telegram
 
-Avachat.API/
+AvaBot.API/
 ├── Controllers/
 │   ├── SessionController.cs     # MODIFICAR: endpoint de retomada
 │   └── TelegramController.cs    # NOVO: webhook + setup endpoints
 └── WebSocket/
     └── ChatWebSocketHandler.cs  # MODIFICAR: incluir resumeToken no evento ready
 
-Avachat.API/
+AvaBot.API/
 └── Program.cs                   # MODIFICAR: registrar servicos Telegram no DI
 ```
 

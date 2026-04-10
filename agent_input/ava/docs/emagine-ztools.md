@@ -50,7 +50,7 @@ Distribuido tambem como pacote NuGet contendo ACL (Anti-Corruption Layer) com cl
 
 ### Produtos Emagine Relacionados
 
-- **Todos os backends Emagine** — NAuth, Avachat, Brahma, Lofn, Dedalo, NNews, BazzucaMedia e MonexUp consomem o zTools
+- **Todos os backends Emagine** — NAuth, AvaBot, Brahma, Lofn, Dedalo, NNews, BazzucaMedia e MonexUp consomem o zTools
 - **NAuth** — Processamento de imagens de perfil
 - **NNews** — Geracao de conteudo e imagens com IA
 - **BazzucaMedia** — Upload de midias para redes sociais
