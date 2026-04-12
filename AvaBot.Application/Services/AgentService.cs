@@ -40,6 +40,7 @@ public class AgentService
     public async Task<Agent> CreateAsync(AgentInsertInfo info)
     {
         await ValidateTelegramBotTokenAsync(info.TelegramBotToken);
+        await ValidateWhatsappTokenAsync(info.WhatsappToken);
 
         var agent = _mapper.Map<Agent>(info);
         agent.Status = 1;
@@ -57,6 +58,7 @@ public class AgentService
         if (agent == null) return null;
 
         await ValidateTelegramBotTokenAsync(info.TelegramBotToken, id);
+        await ValidateWhatsappTokenAsync(info.WhatsappToken, id);
 
         var oldName = agent.Name;
         var hadToken = !string.IsNullOrEmpty(agent.TelegramBotToken);
@@ -78,6 +80,15 @@ public class AgentService
         var existing = await _repository.GetByTelegramBotTokenAsync(token, excludeId);
         if (existing != null)
             throw new InvalidOperationException("Este TelegramBotToken ja esta em uso por outro agente");
+    }
+
+    private async Task ValidateWhatsappTokenAsync(string? token, long? excludeId = null)
+    {
+        if (string.IsNullOrEmpty(token)) return;
+
+        var existing = await _repository.GetByWhatsappTokenAsync(token, excludeId);
+        if (existing != null)
+            throw new InvalidOperationException("Este WhatsappToken ja esta em uso por outro agente");
     }
 
     public async Task<bool> DeleteAsync(long id)

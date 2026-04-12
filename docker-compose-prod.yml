@@ -15,6 +15,7 @@ services:
       Auth__Username: ${AVABOT_USERNAME}
       Auth__Password: ${AVABOT_PASSWORD}
       Auth__JwtSecret: ${AVABOT_JWT_SECRET}
+      WppConnect__SecretKey: ${WPP_SECRET_KEY}
     networks:
       - emagine-network
 

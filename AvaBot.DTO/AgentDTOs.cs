@@ -43,6 +43,9 @@ public class AgentInfo
     [JsonPropertyName("telegramWebhookSecret")]
     public string? TelegramWebhookSecret { get; set; }
 
+    [JsonPropertyName("whatsappToken")]
+    public string? WhatsappToken { get; set; }
+
     [JsonPropertyName("createdAt")]
     public DateTime CreatedAt { get; set; }
 
@@ -78,6 +81,9 @@ public class AgentInsertInfo
 
     [JsonPropertyName("telegramBotToken")]
     public string? TelegramBotToken { get; set; }
+
+    [JsonPropertyName("whatsappToken")]
+    public string? WhatsappToken { get; set; }
 }
 
 public class TelegramWebhookInfo
@@ -144,6 +150,27 @@ public class AgentTestMessageInfo
 
     [JsonPropertyName("content")]
     public string Content { get; set; } = string.Empty;
+}
+
+public class WhatsappQrCodeInfo
+{
+    [JsonPropertyName("agentSlug")]
+    public string AgentSlug { get; set; } = string.Empty;
+
+    [JsonPropertyName("qrCode")]
+    public string QrCode { get; set; } = string.Empty;
+}
+
+public class WhatsappStatusInfo
+{
+    [JsonPropertyName("agentSlug")]
+    public string AgentSlug { get; set; } = string.Empty;
+
+    [JsonPropertyName("status")]
+    public string Status { get; set; } = string.Empty;
+
+    [JsonPropertyName("isConnected")]
+    public bool IsConnected { get; set; }
 }
 
 public class Result<T>

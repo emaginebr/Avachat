@@ -43,6 +43,11 @@ public class AvaBotContext : DbContext
                 .IsUnique()
                 .HasDatabaseName("ix_avabot_agents_telegram_bot_token")
                 .HasFilter("telegram_bot_token IS NOT NULL");
+            entity.Property(e => e.WhatsappToken).HasColumnName("whatsapp_token").HasMaxLength(260);
+            entity.HasIndex(e => e.WhatsappToken)
+                .IsUnique()
+                .HasDatabaseName("ix_avabot_agents_whatsapp_token")
+                .HasFilter("whatsapp_token IS NOT NULL");
         });
 
         // KnowledgeFile

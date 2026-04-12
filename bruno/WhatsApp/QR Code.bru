@@ -1,0 +1,15 @@
+meta {
+  name: QR Code
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/whatsapp/{{agentSlug}}/qrcode
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

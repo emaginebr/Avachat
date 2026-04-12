@@ -1,0 +1,15 @@
+meta {
+  name: Disconnect
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/whatsapp/{{agentSlug}}/disconnect
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

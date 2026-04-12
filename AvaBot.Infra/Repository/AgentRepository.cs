@@ -87,4 +87,10 @@ public class AgentRepository : IAgentRepository<Agent>
         return await _context.Agents.FirstOrDefaultAsync(a =>
             a.TelegramBotToken == token && (excludeId == null || a.AgentId != excludeId));
     }
+
+    public async Task<Agent?> GetByWhatsappTokenAsync(string token, long? excludeId = null)
+    {
+        return await _context.Agents.FirstOrDefaultAsync(a =>
+            a.WhatsappToken == token && (excludeId == null || a.AgentId != excludeId));
+    }
 }

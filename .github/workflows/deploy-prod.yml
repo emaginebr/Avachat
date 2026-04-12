@@ -42,6 +42,7 @@ jobs:
           AVABOT_USERNAME=${{ secrets.AVABOT_USERNAME }}
           AVABOT_PASSWORD=${{ secrets.AVABOT_PASSWORD }}
           AVABOT_JWT_SECRET=${{ secrets.AVABOT_JWT_SECRET }}
+          WPP_SECRET_KEY=${{ secrets.WPP_SECRET_KEY }}
           ENVEOF
 
           # Remove leading whitespace from .env.prod
