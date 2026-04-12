@@ -34,6 +34,16 @@ public static class DependencyInjection
         services.AddScoped<SearchService>();
         services.AddScoped<ChatService>();
         services.AddScoped<TelegramService>();
+        services.AddScoped<WhatsappService>();
+
+        // WPP Connect HttpClient
+        services.AddHttpClient("WppConnect", (sp, client) =>
+        {
+            var config = sp.GetRequiredService<IConfiguration>();
+            client.BaseAddress = new Uri(config["WppConnect:BaseUrl"] ?? "http://localhost:21465");
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
+        services.AddScoped<IWppConnectService, WppConnectService>();
 
         // AutoMapper
         services.AddSingleton<AutoMapper.IMapper>(sp =>

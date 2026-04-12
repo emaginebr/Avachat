@@ -15,6 +15,7 @@ public class Agent
     public string? TelegramBotName { get; set; }
     public string? TelegramBotToken { get; set; }
     public string? TelegramWebhookSecret { get; set; }
+    public string? WhatsappToken { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 

@@ -1,0 +1,15 @@
+meta {
+  name: Start Session
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{baseUrl}}/whatsapp/{{agentSlug}}/start-session
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

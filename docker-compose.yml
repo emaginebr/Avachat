@@ -73,9 +73,22 @@ services:
     networks:
       - emagine-network
 
+  wppconnect:
+    image: wppconnect/server-cli:latest
+    container_name: avabot-wppconnect
+    command: ["--secretKey", "${WPP_SECRET_KEY}", "--port", "21465"]
+    ports:
+      - "21465:21465"
+    volumes:
+      - wpp_tokens:/usr/src/wpp-server/tokens
+    restart: unless-stopped
+    networks:
+      - emagine-network
+
 volumes:
   postgres_data:
   es_data:
+  wpp_tokens:
 
 networks:
   emagine-network:

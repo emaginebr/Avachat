@@ -1,0 +1,29 @@
+meta {
+  name: Webhook (Simulate)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/whatsapp/{{agentSlug}}/webhook
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "event": "onmessage",
+    "session": "{{agentSlug}}",
+    "data": {
+      "from": "5511999999999@c.us",
+      "to": "5511888888888@c.us",
+      "body": "Ola, preciso de ajuda",
+      "type": "chat",
+      "isGroupMsg": false
+    }
+  }
+}
