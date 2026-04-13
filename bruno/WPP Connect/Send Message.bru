@@ -1,0 +1,29 @@
+meta {
+  name: Send Message
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{wppConnectUrl}}/api/{{session}}/send-message
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{wppToken}}
+}
+
+body:json {
+  {
+    "phone": "5511999999999@c.us",
+    "isGroup": false,
+    "message": "Hello from Bruno!"
+  }
+}
+
+vars:pre-request {
+  wppConnectUrl: http://localhost:21465
+  session: ava
+  wppToken:
+}

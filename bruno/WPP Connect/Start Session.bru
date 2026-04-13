@@ -1,0 +1,29 @@
+meta {
+  name: Start Session
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{wppConnectUrl}}/api/{{session}}/start-session
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{wppToken}}
+}
+
+body:json {
+  {
+    "webhook": {
+      "url": "http://localhost:5000/whatsapp/{{session}}/webhook"
+    }
+  }
+}
+
+vars:pre-request {
+  wppConnectUrl: http://localhost:21465
+  session: ava
+  wppToken:
+}

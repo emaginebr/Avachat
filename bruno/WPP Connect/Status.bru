@@ -1,0 +1,21 @@
+meta {
+  name: Status
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{wppConnectUrl}}/api/{{session}}/status-session
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{wppToken}}
+}
+
+vars:pre-request {
+  wppConnectUrl: http://localhost:21465
+  session: ava
+  wppToken:
+}

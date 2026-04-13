@@ -1,0 +1,17 @@
+meta {
+  name: Generate Token
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{wppConnectUrl}}/api/{{session}}/{{wppSecretKey}}/generate-token
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  wppConnectUrl: http://localhost:21465
+  session: ava
+  wppSecretKey: MY_SECRET_KEY
+}

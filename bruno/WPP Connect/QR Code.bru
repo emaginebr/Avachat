@@ -1,0 +1,21 @@
+meta {
+  name: QR Code
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{wppConnectUrl}}/api/{{session}}/qrcode-session
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{wppToken}}
+}
+
+vars:pre-request {
+  wppConnectUrl: http://localhost:21465
+  session: ava
+  wppToken:
+}

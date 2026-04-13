@@ -1,0 +1,21 @@
+meta {
+  name: Close Session
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{wppConnectUrl}}/api/{{session}}/close-session
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{wppToken}}
+}
+
+vars:pre-request {
+  wppConnectUrl: http://localhost:21465
+  session: ava
+  wppToken:
+}
