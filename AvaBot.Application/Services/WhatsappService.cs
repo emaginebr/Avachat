@@ -185,6 +185,15 @@ public class WhatsappService
 
         try
         {
+            var sessionStatus = await _wppConnect.GetStatusAsync(slug);
+            if (!sessionStatus.Equals("CONNECTED", StringComparison.OrdinalIgnoreCase)
+                && !sessionStatus.Equals("inChat", StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogWarning("[WhatsApp Webhook] Sessao WPP nao conectada, mensagem descartada. agente={Slug} phone={Phone} status={Status}",
+                    slug, phone, sessionStatus);
+                return;
+            }
+
             _logger.LogInformation("[WhatsApp Webhook] Processando mensagem. agente={Slug} phone={Phone} mensagem={Message}",
                 slug, phone, messageBody);
 
