@@ -34,7 +34,7 @@ public class WppConnectService : IWppConnectService
     {
         var client = await CreateAuthenticatedClientAsync(session);
 
-        var body = new { webhook = new { url = webhookUrl } };
+        var body = new { webhook = webhookUrl };
         var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
 
         var response = await client.PostAsync($"/api/{session}/start-session", content);
@@ -48,6 +48,15 @@ public class WppConnectService : IWppConnectService
         var client = await CreateAuthenticatedClientAsync(session);
         var response = await client.GetAsync($"/api/{session}/qrcode-session");
         response.EnsureSuccessStatusCode();
+
+        var contentType = response.Content.Headers.ContentType?.MediaType ?? "";
+
+        if (contentType.StartsWith("image/"))
+        {
+            var bytes = await response.Content.ReadAsByteArrayAsync();
+            var base64Img = Convert.ToBase64String(bytes);
+            return $"data:{contentType};base64,{base64Img}";
+        }
 
         var json = await response.Content.ReadAsStringAsync();
         var doc = JsonDocument.Parse(json);

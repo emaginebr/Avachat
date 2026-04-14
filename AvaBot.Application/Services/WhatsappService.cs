@@ -16,6 +16,7 @@ public class WhatsappService
     private readonly ChatService _chatService;
     private readonly ILogger<WhatsappService> _logger;
     private readonly string _webhookBaseUrl;
+    private static readonly long _startTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
     public WhatsappService(
         IWppConnectService wppConnect,
@@ -101,43 +102,92 @@ public class WhatsappService
 
     public async Task ProcessWebhookAsync(string slug, JsonElement payload)
     {
-        if (!payload.TryGetProperty("event", out var eventProp) || eventProp.GetString() != "onmessage")
+        var eventName = payload.TryGetProperty("event", out var eventProp) ? eventProp.GetString() : null;
+        _logger.LogInformation("[WhatsApp Webhook] Recebido evento={Event} agente={Slug} payload={Payload}",
+            eventName, slug, payload.GetRawText());
+
+        if (eventName != "onmessage")
             return;
 
-        if (!payload.TryGetProperty("data", out var data))
-            return;
-
-        if (data.TryGetProperty("isGroupMsg", out var isGroup) && isGroup.GetBoolean())
-            return;
-
-        if (!data.TryGetProperty("type", out var typeProp) || typeProp.GetString() != "chat")
+        // Ignorar mensagens anteriores ao inicio da aplicacao
+        if (payload.TryGetProperty("timestamp", out var tsProp) && tsProp.TryGetInt64(out var msgTimestamp))
         {
-            if (data.TryGetProperty("from", out var fromReject))
+            if (msgTimestamp < _startTimestamp)
             {
-                var rejectPhone = fromReject.GetString()?.Replace("@c.us", "") ?? "";
+                _logger.LogInformation("[WhatsApp Webhook] Mensagem antiga ignorada. agente={Slug} timestamp={Timestamp} appStart={AppStart}",
+                    slug, msgTimestamp, _startTimestamp);
+                return;
+            }
+        }
+
+        // WPP Connect faz Object.assign({ event, session }, messageData) — campos no root, sem wrapper "data"
+        var isGroupMsg = payload.TryGetProperty("isGroupMsg", out var isGroup) && isGroup.GetBoolean();
+        var msgType = payload.TryGetProperty("type", out var typeProp) ? typeProp.GetString() : null;
+        var fromNumber = payload.TryGetProperty("from", out var fromProp) ? fromProp.GetString() ?? "" : "";
+        var messageBody = payload.TryGetProperty("body", out var bodyProp) ? bodyProp.GetString() ?? "" : "";
+
+        _logger.LogInformation("[WhatsApp Webhook] agente={Slug} from={From} type={Type} isGroup={IsGroup} body={Body}",
+            slug, fromNumber, msgType, isGroupMsg, messageBody);
+
+        if (isGroupMsg)
+        {
+            // Em grupos, responder apenas se o agente foi mencionado com @
+            var isMentioned = false;
+            if (payload.TryGetProperty("mentionedJidList", out var mentionedList) && mentionedList.ValueKind == JsonValueKind.Array)
+            {
+                var botId = payload.TryGetProperty("to", out var toProp) ? toProp.GetString() ?? "" : "";
+                foreach (var mentioned in mentionedList.EnumerateArray())
+                {
+                    var mentionedJid = mentioned.GetString() ?? "";
+                    if (!string.IsNullOrEmpty(botId) && mentionedJid == botId)
+                    {
+                        isMentioned = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isMentioned)
+            {
+                _logger.LogInformation("[WhatsApp Webhook] Mensagem de grupo sem mencao ao agente, ignorada. agente={Slug} from={From}", slug, fromNumber);
+                return;
+            }
+
+            _logger.LogInformation("[WhatsApp Webhook] Agente mencionado em grupo. agente={Slug} from={From}", slug, fromNumber);
+        }
+
+        if (msgType != "chat")
+        {
+            _logger.LogInformation("[WhatsApp Webhook] Tipo nao suportado={Type}, enviando rejeicao. agente={Slug} from={From}", msgType, slug, fromNumber);
+            if (!string.IsNullOrEmpty(fromNumber))
+            {
+                var rejectPhone = fromNumber.Replace("@c.us", "");
                 try { await _wppConnect.SendMessageAsync(slug, rejectPhone, "Desculpe, eu so consigo processar mensagens de texto."); }
                 catch { /* ignore send errors for rejection message */ }
             }
             return;
         }
 
-        var fromNumber = data.TryGetProperty("from", out var fromProp) ? fromProp.GetString() ?? "" : "";
-        var messageBody = data.TryGetProperty("body", out var bodyProp) ? bodyProp.GetString() ?? "" : "";
-
         if (string.IsNullOrEmpty(fromNumber) || string.IsNullOrEmpty(messageBody))
+        {
+            _logger.LogInformation("[WhatsApp Webhook] Mensagem vazia ou sem remetente, ignorando. agente={Slug}", slug);
             return;
+        }
 
         var phone = fromNumber.Replace("@c.us", "");
 
         var resolvedAgent = await _agentService.GetBySlugAsync(slug);
         if (resolvedAgent == null || resolvedAgent.Status == 0 || string.IsNullOrEmpty(resolvedAgent.WhatsappToken))
         {
-            _logger.LogWarning("Webhook recebido para agente invalido ou inativo: {Slug}", slug);
+            _logger.LogWarning("[WhatsApp Webhook] Agente invalido ou inativo: {Slug}", slug);
             return;
         }
 
         try
         {
+            _logger.LogInformation("[WhatsApp Webhook] Processando mensagem. agente={Slug} phone={Phone} mensagem={Message}",
+                slug, phone, messageBody);
+
             var session = await _chatService.CreateSessionAsync(
                 resolvedAgent.AgentId,
                 phone,
@@ -155,12 +205,17 @@ public class WhatsappService
                 fullResponse += token;
             }
 
+            _logger.LogInformation("[WhatsApp Webhook] Resposta gerada. agente={Slug} phone={Phone} tamanho={Length} resposta={Response}",
+                slug, phone, fullResponse.Length, fullResponse);
+
             if (!string.IsNullOrEmpty(fullResponse))
                 await _wppConnect.SendMessageAsync(slug, phone, fullResponse);
+
+            _logger.LogInformation("[WhatsApp Webhook] Resposta enviada com sucesso. agente={Slug} phone={Phone}", slug, phone);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao processar mensagem WhatsApp do {Phone} para agente {Slug}", phone, slug);
+            _logger.LogError(ex, "[WhatsApp Webhook] Erro ao processar mensagem. agente={Slug} phone={Phone}", slug, phone);
         }
     }
 

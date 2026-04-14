@@ -14,6 +14,7 @@ services:
       Auth__Username: ${AVABOT_USERNAME}
       Auth__Password: ${AVABOT_PASSWORD}
       Auth__JwtSecret: ${AVABOT_JWT_SECRET}
+      WppConnect__SecretKey: ${WPP_SECRET_KEY}
     depends_on:
       postgres:
         condition: service_healthy
@@ -74,7 +75,10 @@ services:
       - emagine-network
 
   wppconnect:
-    image: wppconnect/server-cli:latest
+    build:
+      context: .
+      dockerfile: wppconnect.Dockerfile
+    image: avabot/wppconnect:latest
     container_name: avabot-wppconnect
     command: ["--secretKey", "${WPP_SECRET_KEY}", "--port", "21465"]
     ports:
