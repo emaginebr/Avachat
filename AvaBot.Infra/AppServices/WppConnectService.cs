@@ -119,184 +119,38 @@ public class WppConnectService : IWppConnectService
 
     public async Task<string?> GetBotLidAsync(string session, string? groupId = null)
     {
+        if (string.IsNullOrEmpty(groupId))
+            return null;
+
         var client = await CreateAuthenticatedClientAsync(session);
-
-        string? phoneNumber = null;
-        using (var hostJson = await TryGetJsonAsync(client, $"/api/{session}/host-device", session))
+        var response = await client.GetAsync($"/api/{session}/group-members/{groupId}");
+        if (!response.IsSuccessStatusCode)
         {
-            if (hostJson != null)
-            {
-                var lid = FindLidRecursive(hostJson.RootElement);
-                if (!string.IsNullOrEmpty(lid)) return lid;
-
-                phoneNumber = FindStringProperty(hostJson.RootElement, "phoneNumber")
-                    ?? FindStringProperty(hostJson.RootElement, "wid");
-            }
-        }
-
-        if (!string.IsNullOrEmpty(phoneNumber))
-        {
-            foreach (var path in new[]
-            {
-                $"/api/{session}/contact/{phoneNumber}",
-                $"/api/{session}/profile/{phoneNumber}",
-                $"/api/{session}/check-number-status/{phoneNumber}"
-            })
-            {
-                using var json = await TryGetJsonAsync(client, path, session);
-                if (json == null) continue;
-                var lid = FindLidRecursive(json.RootElement);
-                if (!string.IsNullOrEmpty(lid))
-                {
-                    _logger.LogInformation("LID obtido via {Path}. session={Session} lid={Lid}", path, session, lid);
-                    return lid;
-                }
-            }
-        }
-
-        if (!string.IsNullOrEmpty(groupId))
-        {
-            using var groupJson = await TryGetJsonAsync(client, $"/api/{session}/group-members/{groupId}", session);
-            if (groupJson != null)
-            {
-                var lid = FindSelfLidInMembers(groupJson.RootElement);
-                if (!string.IsNullOrEmpty(lid))
-                {
-                    _logger.LogInformation("LID obtido via group-members. session={Session} lid={Lid}", session, lid);
-                    return lid;
-                }
-            }
-        }
-
-        _logger.LogWarning("LID nao encontrado em nenhum endpoint. session={Session} phoneNumber={Phone}", session, phoneNumber);
-        return null;
-    }
-
-    private static string? FindSelfLidInMembers(JsonElement element)
-    {
-        switch (element.ValueKind)
-        {
-            case JsonValueKind.Object:
-                var isMe = element.TryGetProperty("isMe", out var isMeProp)
-                    && isMeProp.ValueKind == JsonValueKind.True;
-                if (isMe)
-                {
-                    if (element.TryGetProperty("id", out var idProp))
-                    {
-                        if (idProp.ValueKind == JsonValueKind.String)
-                        {
-                            var s = idProp.GetString();
-                            if (!string.IsNullOrEmpty(s) && s.Contains("@lid")) return s;
-                        }
-                        else if (idProp.ValueKind == JsonValueKind.Object
-                            && idProp.TryGetProperty("_serialized", out var ser)
-                            && ser.ValueKind == JsonValueKind.String)
-                        {
-                            var s = ser.GetString();
-                            if (!string.IsNullOrEmpty(s) && s.Contains("@lid")) return s;
-                        }
-                    }
-                    var lidDirect = FindStringProperty(element, "lid");
-                    if (!string.IsNullOrEmpty(lidDirect)) return lidDirect;
-                }
-                foreach (var prop in element.EnumerateObject())
-                {
-                    var nested = FindSelfLidInMembers(prop.Value);
-                    if (!string.IsNullOrEmpty(nested)) return nested;
-                }
-                break;
-            case JsonValueKind.Array:
-                foreach (var item in element.EnumerateArray())
-                {
-                    var nested = FindSelfLidInMembers(item);
-                    if (!string.IsNullOrEmpty(nested)) return nested;
-                }
-                break;
-        }
-        return null;
-    }
-
-    private async Task<JsonDocument?> TryGetJsonAsync(System.Net.Http.HttpClient client, string path, string session)
-    {
-        try
-        {
-            var response = await client.GetAsync(path);
-            var body = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-            {
-                _logger.LogInformation("{Path} retornou {Status}. session={Session} body={Body}", path, response.StatusCode, session, body);
-                return null;
-            }
-            _logger.LogInformation("[LID-debug] {Path} response. session={Session} body={Body}", path, session, body);
-            return JsonDocument.Parse(body);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogDebug(ex, "Erro ao consultar {Path}. session={Session}", path, session);
+            _logger.LogWarning("Falha ao obter group-members. session={Session} groupId={GroupId} status={Status}",
+                session, groupId, response.StatusCode);
             return null;
         }
-    }
 
-    private static string? FindStringProperty(JsonElement element, string propertyName)
-    {
-        switch (element.ValueKind)
-        {
-            case JsonValueKind.Object:
-                foreach (var prop in element.EnumerateObject())
-                {
-                    if (prop.NameEquals(propertyName) && prop.Value.ValueKind == JsonValueKind.String)
-                    {
-                        var val = prop.Value.GetString();
-                        if (!string.IsNullOrEmpty(val)) return val;
-                    }
-                    var nested = FindStringProperty(prop.Value, propertyName);
-                    if (!string.IsNullOrEmpty(nested)) return nested;
-                }
-                break;
-            case JsonValueKind.Array:
-                foreach (var item in element.EnumerateArray())
-                {
-                    var nested = FindStringProperty(item, propertyName);
-                    if (!string.IsNullOrEmpty(nested)) return nested;
-                }
-                break;
-        }
-        return null;
-    }
+        var json = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
 
-    private static string? FindLidRecursive(JsonElement element)
-    {
-        switch (element.ValueKind)
+        if (!doc.RootElement.TryGetProperty("response", out var members) || members.ValueKind != JsonValueKind.Array)
+            return null;
+
+        foreach (var member in members.EnumerateArray())
         {
-            case JsonValueKind.Object:
-                foreach (var prop in element.EnumerateObject())
-                {
-                    if (prop.NameEquals("lid") && prop.Value.ValueKind == JsonValueKind.String)
-                    {
-                        var val = prop.Value.GetString();
-                        if (!string.IsNullOrEmpty(val)) return val;
-                    }
-                    if (prop.Value.ValueKind == JsonValueKind.Object
-                        && prop.Value.TryGetProperty("server", out var server)
-                        && server.ValueKind == JsonValueKind.String
-                        && server.GetString() == "lid"
-                        && prop.Value.TryGetProperty("_serialized", out var ser)
-                        && ser.ValueKind == JsonValueKind.String)
-                    {
-                        return ser.GetString();
-                    }
-                    var nested = FindLidRecursive(prop.Value);
-                    if (!string.IsNullOrEmpty(nested)) return nested;
-                }
-                break;
-            case JsonValueKind.Array:
-                foreach (var item in element.EnumerateArray())
-                {
-                    var nested = FindLidRecursive(item);
-                    if (!string.IsNullOrEmpty(nested)) return nested;
-                }
-                break;
+            if (!member.TryGetProperty("isMe", out var isMe) || isMe.ValueKind != JsonValueKind.True)
+                continue;
+
+            if (member.TryGetProperty("id", out var idProp)
+                && idProp.ValueKind == JsonValueKind.Object
+                && idProp.TryGetProperty("_serialized", out var ser)
+                && ser.ValueKind == JsonValueKind.String)
+            {
+                return ser.GetString();
+            }
         }
+
         return null;
     }
 
