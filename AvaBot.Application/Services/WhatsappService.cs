@@ -133,7 +133,7 @@ public class WhatsappService
         if (isGroupMsg)
         {
             // WhatsApp usa LID (privacy id) em mentionedJidList. Buscamos o LID do bot via host-device e cacheamos.
-            var botLid = await GetBotLidCachedAsync(slug);
+            var botLid = await GetBotLidCachedAsync(slug, fromNumber);
             var isMentioned = false;
             if (!string.IsNullOrEmpty(botLid)
                 && payload.TryGetProperty("mentionedJidList", out var mentionedList)
@@ -231,14 +231,14 @@ public class WhatsappService
         }
     }
 
-    private async Task<string?> GetBotLidCachedAsync(string slug)
+    private async Task<string?> GetBotLidCachedAsync(string slug, string? groupId = null)
     {
         if (_botLidCache.TryGetValue(slug, out var cached))
             return cached;
 
         try
         {
-            var lid = await _wppConnect.GetBotLidAsync(slug);
+            var lid = await _wppConnect.GetBotLidAsync(slug, groupId);
             if (!string.IsNullOrEmpty(lid))
             {
                 _botLidCache[slug] = lid;

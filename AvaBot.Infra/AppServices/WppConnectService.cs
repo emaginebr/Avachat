@@ -117,7 +117,7 @@ public class WppConnectService : IWppConnectService
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task<string?> GetBotLidAsync(string session)
+    public async Task<string?> GetBotLidAsync(string session, string? groupId = null)
     {
         var client = await CreateAuthenticatedClientAsync(session);
 
@@ -154,7 +154,65 @@ public class WppConnectService : IWppConnectService
             }
         }
 
+        if (!string.IsNullOrEmpty(groupId))
+        {
+            using var groupJson = await TryGetJsonAsync(client, $"/api/{session}/group-members/{groupId}", session);
+            if (groupJson != null)
+            {
+                var lid = FindSelfLidInMembers(groupJson.RootElement);
+                if (!string.IsNullOrEmpty(lid))
+                {
+                    _logger.LogInformation("LID obtido via group-members. session={Session} lid={Lid}", session, lid);
+                    return lid;
+                }
+            }
+        }
+
         _logger.LogWarning("LID nao encontrado em nenhum endpoint. session={Session} phoneNumber={Phone}", session, phoneNumber);
+        return null;
+    }
+
+    private static string? FindSelfLidInMembers(JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                var isMe = element.TryGetProperty("isMe", out var isMeProp)
+                    && isMeProp.ValueKind == JsonValueKind.True;
+                if (isMe)
+                {
+                    if (element.TryGetProperty("id", out var idProp))
+                    {
+                        if (idProp.ValueKind == JsonValueKind.String)
+                        {
+                            var s = idProp.GetString();
+                            if (!string.IsNullOrEmpty(s) && s.Contains("@lid")) return s;
+                        }
+                        else if (idProp.ValueKind == JsonValueKind.Object
+                            && idProp.TryGetProperty("_serialized", out var ser)
+                            && ser.ValueKind == JsonValueKind.String)
+                        {
+                            var s = ser.GetString();
+                            if (!string.IsNullOrEmpty(s) && s.Contains("@lid")) return s;
+                        }
+                    }
+                    var lidDirect = FindStringProperty(element, "lid");
+                    if (!string.IsNullOrEmpty(lidDirect)) return lidDirect;
+                }
+                foreach (var prop in element.EnumerateObject())
+                {
+                    var nested = FindSelfLidInMembers(prop.Value);
+                    if (!string.IsNullOrEmpty(nested)) return nested;
+                }
+                break;
+            case JsonValueKind.Array:
+                foreach (var item in element.EnumerateArray())
+                {
+                    var nested = FindSelfLidInMembers(item);
+                    if (!string.IsNullOrEmpty(nested)) return nested;
+                }
+                break;
+        }
         return null;
     }
 
