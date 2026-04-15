@@ -131,20 +131,15 @@ public class WhatsappService
 
         if (isGroupMsg)
         {
-            // Em grupos, responder apenas se o agente foi mencionado com @
+            // WhatsApp usa LID (privacy id) em mentionedJidList, mas "to" vem como @c.us.
+            // Heuristica: se o body contem @<digitos> e mentionedJidList nao esta vazia, assumimos mencao ao bot.
             var isMentioned = false;
-            if (payload.TryGetProperty("mentionedJidList", out var mentionedList) && mentionedList.ValueKind == JsonValueKind.Array)
+            if (payload.TryGetProperty("mentionedJidList", out var mentionedList)
+                && mentionedList.ValueKind == JsonValueKind.Array
+                && mentionedList.GetArrayLength() > 0
+                && System.Text.RegularExpressions.Regex.IsMatch(messageBody, "@\\d+"))
             {
-                var botId = payload.TryGetProperty("to", out var toProp) ? toProp.GetString() ?? "" : "";
-                foreach (var mentioned in mentionedList.EnumerateArray())
-                {
-                    var mentionedJid = mentioned.GetString() ?? "";
-                    if (!string.IsNullOrEmpty(botId) && mentionedJid == botId)
-                    {
-                        isMentioned = true;
-                        break;
-                    }
-                }
+                isMentioned = true;
             }
 
             if (!isMentioned)
