@@ -117,6 +117,66 @@ public class WppConnectService : IWppConnectService
         response.EnsureSuccessStatusCode();
     }
 
+    public async Task<string?> GetBotLidAsync(string session)
+    {
+        var client = await CreateAuthenticatedClientAsync(session);
+        var response = await client.GetAsync($"/api/{session}/host-device");
+        if (!response.IsSuccessStatusCode)
+        {
+            var err = await response.Content.ReadAsStringAsync();
+            _logger.LogWarning("Falha ao obter host-device. session={Session} status={Status} body={Body}", session, response.StatusCode, err);
+            return null;
+        }
+
+        var json = await response.Content.ReadAsStringAsync();
+        _logger.LogDebug("host-device response session={Session} body={Body}", session, json);
+
+        using var doc = JsonDocument.Parse(json);
+        var root = doc.RootElement;
+
+        var lid = FindLidRecursive(root);
+        if (string.IsNullOrEmpty(lid))
+            _logger.LogWarning("LID nao encontrado em host-device. session={Session} body={Body}", session, json);
+
+        return lid;
+    }
+
+    private static string? FindLidRecursive(JsonElement element)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.Object:
+                foreach (var prop in element.EnumerateObject())
+                {
+                    if (prop.NameEquals("lid") && prop.Value.ValueKind == JsonValueKind.String)
+                    {
+                        var val = prop.Value.GetString();
+                        if (!string.IsNullOrEmpty(val)) return val;
+                    }
+                    if (prop.Value.ValueKind == JsonValueKind.Object
+                        && prop.Value.TryGetProperty("server", out var server)
+                        && server.ValueKind == JsonValueKind.String
+                        && server.GetString() == "lid"
+                        && prop.Value.TryGetProperty("_serialized", out var ser)
+                        && ser.ValueKind == JsonValueKind.String)
+                    {
+                        return ser.GetString();
+                    }
+                    var nested = FindLidRecursive(prop.Value);
+                    if (!string.IsNullOrEmpty(nested)) return nested;
+                }
+                break;
+            case JsonValueKind.Array:
+                foreach (var item in element.EnumerateArray())
+                {
+                    var nested = FindLidRecursive(item);
+                    if (!string.IsNullOrEmpty(nested)) return nested;
+                }
+                break;
+        }
+        return null;
+    }
+
     private HttpClient CreateClient()
     {
         return _httpClientFactory.CreateClient("WppConnect");

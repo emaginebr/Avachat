@@ -17,6 +17,7 @@ public class WhatsappService
     private readonly ILogger<WhatsappService> _logger;
     private readonly string _webhookBaseUrl;
     private static readonly long _startTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> _botLidCache = new();
 
     public WhatsappService(
         IWppConnectService wppConnect,
@@ -131,15 +132,22 @@ public class WhatsappService
 
         if (isGroupMsg)
         {
-            // WhatsApp usa LID (privacy id) em mentionedJidList, mas "to" vem como @c.us.
-            // Heuristica: se o body contem @<digitos> e mentionedJidList nao esta vazia, assumimos mencao ao bot.
+            // WhatsApp usa LID (privacy id) em mentionedJidList. Buscamos o LID do bot via host-device e cacheamos.
+            var botLid = await GetBotLidCachedAsync(slug);
             var isMentioned = false;
-            if (payload.TryGetProperty("mentionedJidList", out var mentionedList)
-                && mentionedList.ValueKind == JsonValueKind.Array
-                && mentionedList.GetArrayLength() > 0
-                && System.Text.RegularExpressions.Regex.IsMatch(messageBody, "@\\d+"))
+            if (!string.IsNullOrEmpty(botLid)
+                && payload.TryGetProperty("mentionedJidList", out var mentionedList)
+                && mentionedList.ValueKind == JsonValueKind.Array)
             {
-                isMentioned = true;
+                foreach (var mentioned in mentionedList.EnumerateArray())
+                {
+                    if (mentioned.ValueKind == JsonValueKind.String
+                        && string.Equals(mentioned.GetString(), botLid, StringComparison.OrdinalIgnoreCase))
+                    {
+                        isMentioned = true;
+                        break;
+                    }
+                }
             }
 
             if (!isMentioned)
@@ -220,6 +228,28 @@ public class WhatsappService
         catch (Exception ex)
         {
             _logger.LogError(ex, "[WhatsApp Webhook] Erro ao processar mensagem. agente={Slug} phone={Phone}", slug, phone);
+        }
+    }
+
+    private async Task<string?> GetBotLidCachedAsync(string slug)
+    {
+        if (_botLidCache.TryGetValue(slug, out var cached))
+            return cached;
+
+        try
+        {
+            var lid = await _wppConnect.GetBotLidAsync(slug);
+            if (!string.IsNullOrEmpty(lid))
+            {
+                _botLidCache[slug] = lid;
+                _logger.LogInformation("[WhatsApp] LID do bot cacheado. agente={Slug} lid={Lid}", slug, lid);
+            }
+            return lid;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "[WhatsApp] Falha ao obter LID do bot. agente={Slug}", slug);
+            return null;
         }
     }
 

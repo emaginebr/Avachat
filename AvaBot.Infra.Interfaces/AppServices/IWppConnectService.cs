@@ -8,4 +8,5 @@ public interface IWppConnectService
     Task<string> GetStatusAsync(string session);
     Task CloseSessionAsync(string session);
     Task SendMessageAsync(string session, string phone, string message);
+    Task<string?> GetBotLidAsync(string session);
 }
