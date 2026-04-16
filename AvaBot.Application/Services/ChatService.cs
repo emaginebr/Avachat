@@ -118,7 +118,8 @@ public class ChatService
     private string BuildFullSystemPrompt(string systemPrompt, ChatSession? session)
     {
         var fullSystemPrompt = systemPrompt
-            + "\n\nIMPORTANTE: Responda SOMENTE com base no contexto fornecido. Se nao encontrar informacao relevante no contexto, informe que nao possui essa informacao.";
+            + "\n\nIMPORTANTE: Responda SOMENTE com base no contexto fornecido. Se nao encontrar informacao relevante no contexto, informe que nao possui essa informacao."
+            + "\n\nFORMATACAO: Responda usando Markdown. Use **negrito** para termos importantes, listas com - ou 1. para enumerar itens, e paragrafos bem estruturados. NAO use titulos ou cabecalhos (nada de # ou ##). Mantenha a resposta clara, objetiva e bem formatada.";
 
         var userInfo = BuildUserInfoContext(session);
         if (!string.IsNullOrEmpty(userInfo))
@@ -143,7 +144,7 @@ public class ChatService
         if (chunks.Count > 0)
         {
             var context = "Contexto relevante da base de conhecimento:\n\n" + string.Join("\n\n---\n\n", chunks);
-            messages.Add(new ChatCompletionMessage { Role = "assistant", Content = context });
+            messages.Add(new ChatCompletionMessage { Role = "system", Content = context });
         }
 
         messages.Add(new ChatCompletionMessage { Role = "user", Content = userMessage });
