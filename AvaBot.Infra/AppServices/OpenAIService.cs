@@ -46,6 +46,8 @@ public class OpenAIService : IOpenAIService
                 chatMessages.Add(new UserChatMessage(msg.Content));
             else if (msg.Role == "assistant")
                 chatMessages.Add(new AssistantChatMessage(msg.Content));
+            else if (msg.Role == "system")
+                chatMessages.Add(new SystemChatMessage(msg.Content));
         }
 
         var result = await chatClient.CompleteChatAsync(chatMessages, cancellationToken: cancellationToken);
@@ -71,6 +73,8 @@ public class OpenAIService : IOpenAIService
                 chatMessages.Add(new UserChatMessage(msg.Content));
             else if (msg.Role == "assistant")
                 chatMessages.Add(new AssistantChatMessage(msg.Content));
+            else if (msg.Role == "system")
+                chatMessages.Add(new SystemChatMessage(msg.Content));
         }
 
         var streamingResult = chatClient.CompleteChatStreamingAsync(chatMessages, cancellationToken: cancellationToken);
